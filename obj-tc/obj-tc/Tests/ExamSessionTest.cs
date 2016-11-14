@@ -242,7 +242,7 @@ namespace obj_tc.Tests
         public void AddExamSessionAndActivateCreatedSession_Test()
         {
             var landingPage = new LandingPage(DriverContext);
-            var sessionDate = date.AddDays(6).ToString(format);
+            var sessionDate = date.AddDays(8).ToString(format);
 
             var level = new List<string> { "Podstawowy" };
             var product = new Dictionary<string, int>
@@ -265,6 +265,8 @@ namespace obj_tc.Tests
             var sessionDetailsPage = addSessionPage.SaveSession().ActivateSession();
 
             sessionDetailsPage.Status.Should().Be("Otwarta");
+
+            // Czy powinnismy sprawdzać na landing pagu czy sesje się pojawiły?
         }
     }
 }
