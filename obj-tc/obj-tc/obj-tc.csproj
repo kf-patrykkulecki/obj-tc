@@ -107,6 +107,7 @@
     <Compile Include="Page\ForgotPasswordPage.cs" />
     <Compile Include="Page\LandingPage.cs" />
     <Compile Include="Page\LogInPage.cs" />
+    <Compile Include="Page\RegisterPage.cs" />
     <Compile Include="Page\SessionDetailsPage.cs" />
     <Compile Include="ProjectPageBase.cs" />
     <Compile Include="ProjectTestBase.cs" />

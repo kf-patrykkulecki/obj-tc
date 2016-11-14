@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using obj_tc.Page;
+using Objectivity.Test.Automation.Common;
 using Objectivity.Test.Automation.Tests.Xunit;
 using Xunit;
 
@@ -10,8 +11,8 @@ namespace obj_tc.Tests
 {
     public class ExamSessionTest : ProjectTestBase
     {
-        private const string email = "objectivity1@pgs-soft.com";
-        private const string password = "FrhHHLQLj9";
+        private readonly string email = BaseConfiguration.Username;
+        private readonly string password = BaseConfiguration.Password;
         private DateTime date = DateTime.Now;
         private const string format = "dd.MM.yyyy HH:mm";
 

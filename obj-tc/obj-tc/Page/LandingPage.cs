@@ -16,7 +16,8 @@ namespace obj_tc.Page
 
         public LandingPage OpenLandingPage()
         {
-            this.Driver.NavigateTo(new System.Uri("https://examplanner.pgs-soft.com/obj"));
+            this.Driver.NavigateTo(
+                new System.Uri(BaseConfiguration.Protocol + BaseConfiguration.Host + BaseConfiguration.Url));
             return this;
         }
 

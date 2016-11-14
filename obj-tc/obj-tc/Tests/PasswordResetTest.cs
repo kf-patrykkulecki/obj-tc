@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using obj_tc.Page;
+using Objectivity.Test.Automation.Common;
 using Objectivity.Test.Automation.Tests.Xunit;
 using Xunit;
 
@@ -10,7 +11,7 @@ namespace obj_tc.Tests
         [Fact]
         public void PasswordReset_Test()
         {
-            const string email = "objectivity1@pgs-soft.com";
+            var email = BaseConfiguration.Username;
             var landingPage = new LandingPage(DriverContext);
 
             var forgotPasswordPage = landingPage.OpenLandingPage().OpenLogInPage().ForgotPassword();
