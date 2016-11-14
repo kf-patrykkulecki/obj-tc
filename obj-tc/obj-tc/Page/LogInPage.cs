@@ -1,12 +1,6 @@
 ﻿using Objectivity.Test.Automation.Tests.PageObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Objectivity.Test.Automation.Common;
 using Objectivity.Test.Automation.Common.Types;
-using Objectivity.Test.Automation.Common.Extensions;
 using obj_tc.Extensions;
 
 namespace obj_tc.Page
@@ -16,6 +10,7 @@ namespace obj_tc.Page
         private readonly ElementLocator emailInput = new ElementLocator(Locator.Id, "Email");
         private readonly ElementLocator passwordInput = new ElementLocator(Locator.Id, "PasswordPass");
         private readonly ElementLocator loginButton = new ElementLocator(Locator.CssSelector, ".Login-buttonsContainer [type='Submit']");
+        private readonly ElementLocator forgotPasswordButton = new ElementLocator(Locator.CssSelector, ".Login-buttonsContainer div.btn a");
 
         public LogInPage(DriverContext driverContext) : base(driverContext)
         {
@@ -37,6 +32,12 @@ namespace obj_tc.Page
         {
             this.Driver.Click(loginButton);
             return new DashboardPage(DriverContext);
+        }
+
+        public ForgotPasswordPage ForgotPassword()
+        {
+            this.Driver.Click(forgotPasswordButton);
+            return new ForgotPasswordPage(DriverContext);
         }
     }
 }

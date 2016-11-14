@@ -5,21 +5,23 @@ using Xunit;
 
 namespace obj_tc.Tests
 {
-    public class LogInTests : ProjectTestBase
+    public class LogInTest : ProjectTestBase
     {
         [Fact]
-        public void LogInTest()
+        public void LogIn_Test()
         {
+            const string email = "objectivity1@pgs-soft.com";
+            const string password = "FrhHHLQLj9";
             var page = new LandingPage(DriverContext);
 
             var signInPage = page.OpenLandingPage().OpenLogInPage();
 
             var dashboardPage = signInPage
-                .SetEmail("objectivity1@pgs-soft.com")
-                .SetPassword("FrhHHLQLj9")
+                .SetEmail(email)
+                .SetPassword(password)
                 .LogIn();
 
-            dashboardPage.UserName.Should().Be("objectivity1@pgs-soft.com");
+            dashboardPage.UserName.Should().Be(email);
         }
     }
 }

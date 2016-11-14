@@ -103,13 +103,18 @@
     <Compile Include="Extensions\DriverExtensions.cs" />
     <Compile Include="Page\AddSessionPage.cs" />
     <Compile Include="Page\DashboardPage.cs" />
+    <Compile Include="Page\ForgotPasswordConfirmationPage.cs" />
+    <Compile Include="Page\ForgotPasswordPage.cs" />
     <Compile Include="Page\LandingPage.cs" />
     <Compile Include="Page\LogInPage.cs" />
+    <Compile Include="Page\SessionDetailsPage.cs" />
     <Compile Include="ProjectPageBase.cs" />
     <Compile Include="ProjectTestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestFixture.cs" />
-    <Compile Include="Tests\LogInTests.cs" />
+    <Compile Include="Tests\ExamSessionTest.cs" />
+    <Compile Include="Tests\LogInTest.cs" />
+    <Compile Include="Tests\PasswordResetTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
