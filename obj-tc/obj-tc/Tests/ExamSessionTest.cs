@@ -271,6 +271,66 @@ namespace obj_tc.Tests
         public void AddExamSessionWithMaximumNumberOfParticipantsDefinedPerExamSession_Test()
         {
             //Na stronie jest błąd i można dodać albo z wartością ujemna albo większą niż 999. Walidacja nie zawsze się odpala
+            var landingPage = new LandingPage(DriverContext);
+
+            // Data
+            var sessionDate = date.AddDays(4).ToString(format);
+            var sessionCity = GetTimeStamp();
+            var level = new List<string>
+            {
+                "Podstawowy",
+                "Zaawansowany",
+                "Ekspercki",
+                "Inny"
+            };
+            var product = new Dictionary<string, int>
+            {
+                {"ISTQB Foundation Level / Polski, Angielski", 999},
+                {"ISTQB Advanced Level Test Analyst / Polski, Angielski", 999},
+                {"ISTQB Test Management / Angielski", 999},
+                {"ISTQB Agile Tester Extension / Polski, Angielski", 999},
+            };
+            var expectedProduct = new List<string>
+            {
+                "ISTQB Foundation Level/Polski, Angielski",
+                "ISTQB Advanced Level Test Analyst/Polski, Angielski",
+                "ISTQB Test Management/Angielski",
+                "ISTQB Agile Tester Extension/Polski, Angielski"
+            };
+
+            var addSessionPage =
+                landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn().Topbar.OpenAddSession();
+
+            // Create session
+            addSessionPage.SetDate(sessionDate)
+                .SetCity(sessionCity.ToString())
+                .SetSpacePerSession(999.ToString())
+                .SelectLevel(level)
+                .SelectProduct(product.Select(el => el.Key).ToList());
+            
+            var sessionDetailsPage = addSessionPage.SaveSession();
+
+            // Check session details
+            sessionDetailsPage.Date.Should().Be(sessionDate.Split(' ')[0]);
+            sessionDetailsPage.Time.Should().Be(sessionDate.Split(' ')[1]);
+            sessionDetailsPage.Space.Should().Be(999);
+            sessionDetailsPage.Examiner.Should().BeEmpty();
+            sessionDetailsPage.PostCode.Should().Be("-");
+            sessionDetailsPage.City.Should().Be(sessionCity.ToString());
+            sessionDetailsPage.Address.Should().Be("-");
+            sessionDetailsPage.AdditionalInformation.Should().Be("-");
+            sessionDetailsPage.Status.Should().Be("Nowy");
+
+            sessionDetailsPage.SwitchToExams();
+            sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
+
+            sessionDetailsPage.ExamsSpaceBasic.Should().Be(999);
+            sessionDetailsPage.ExamsSpaceAdvanced.Should().Be(0);
+            sessionDetailsPage.ExamsSpaceExpert.Should().Be(0);
+            sessionDetailsPage.ExamsSpaceOther.Should().Be(0);
+
+            // Check if session present on dashboard
+            sessionDetailsPage.Topbar.OpenDashboard().IsSessionDisplayed(sessionCity.ToString()).Should().BeTrue();
         }
 
         [Fact]
