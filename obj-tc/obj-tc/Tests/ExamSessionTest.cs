@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using obj_tc.Extensions;
 using obj_tc.Page;
 using Objectivity.Test.Automation.Common;
 using Objectivity.Test.Automation.Tests.Xunit;
@@ -307,9 +308,9 @@ namespace obj_tc.Tests
         {
             var landingPage = new LandingPage(DriverContext);
 
+            // Data
             var sessionDate = date.AddDays(1).ToString(format);
             var sessionCity = GetTimeStamp();
-
             var level = new List<string> { "Podstawowy" };
             var product = new Dictionary<string, int>
             {
@@ -324,6 +325,7 @@ namespace obj_tc.Tests
 
             var addSessionPage = dashboardPage.Topbar.OpenAddSession();
 
+            // Create session
             addSessionPage.SetDate(sessionDate)
                 .SetCity(sessionCity.ToString())
                 .SelectSpacePerProduct()
@@ -342,8 +344,131 @@ namespace obj_tc.Tests
                 .SelectProduct(product.Select(el => el.Key).ToList())
                 .SetProductSpace(product.Keys.First(), product.Values.First()).SaveSession();
 
+            // Check if error message present
             addSessionPage.ErrorMessage.Should()
                 .Be("Operacja nie może zostać zrealizowana. Identyczny produkt jest już zdefiniowany.");
+        }
+
+        [Fact]
+        public void AddExamSessionWithAllDetailsForToday_Test()
+        {
+            var landingPage = new LandingPage(DriverContext);
+
+            // Data
+            var sessionDate = date.AddHours(2).ToString(format);
+            var sessionCity = StringExtensions.GenerateMaxAlphanumericString(50);
+            var sessionPostCode = "54-429";
+            var sessionAddress = StringExtensions.GenerateMaxAlphanumericString(50);
+            var sessionAdditionalInformation = StringExtensions.GenerateMaxAlphanumericString(500);
+            var examiner = "Objectivity 1 Test";
+            var level = new List<string> { "Ekspercki" };
+            var product = new Dictionary<string, int>
+            {
+                {"ISTQB Improving the Testing Process / Angielski", 999}
+            };
+            var expectedProduct = new List<string>
+            {
+                "ISTQB Improving the Testing Process/Angielski"
+            };
+
+            var dashboardPage = landingPage.OpenLandingPage()
+                .OpenLogInPage()
+                .SetEmail(email)
+                .SetPassword(password)
+                .LogIn();
+
+            var addSessionPage = dashboardPage.Topbar.OpenAddSession();
+
+            // Create session
+            addSessionPage.SetDate(sessionDate)
+                .SetPostCode(sessionPostCode)
+                .SetCity(sessionCity)
+                .SetAddress(sessionAddress)
+                .SetAdditionalInformation(sessionAdditionalInformation)
+                .SelectSpacePerProduct()
+                .SelectLevel(level)
+                .SelectProduct(product.Select(el => el.Key).ToList())
+                .SetProductSpace(product.Keys.First(), product.Values.First())
+                .SelectExaminer(examiner);
+
+            var sessionDetailsPage = addSessionPage.SaveSession();
+
+            // Check session details
+            sessionDetailsPage.Date.Should().Be(sessionDate.Split(' ')[0]);
+            sessionDetailsPage.Time.Should().Be(sessionDate.Split(' ')[1]);
+            sessionDetailsPage.Space.Should().Be(product.Select(el => el.Value).Sum());
+            sessionDetailsPage.Examiner.Should().Be(examiner);
+            sessionDetailsPage.PostCode.Should().Be(sessionPostCode);
+            sessionDetailsPage.City.Should().Be(sessionCity);
+            sessionDetailsPage.Address.Should().Be(sessionAddress);
+            sessionDetailsPage.AdditionalInformation.Should().Be(sessionAdditionalInformation);
+            sessionDetailsPage.Status.Should().Be("Zamknięta - niezalogowani");
+
+            sessionDetailsPage.SwitchToExams();
+            sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
+
+            sessionDetailsPage.ExamsSpaceBasic.Should().Be(product.Select(el => el.Value).Take(1).Sum());
+        }
+
+        [Fact]
+        public void AddExamSessionWithAllDetailsForTommorow_Test()
+        {
+            var landingPage = new LandingPage(DriverContext);
+
+            // Data
+            var sessionDate = date.AddDays(1).ToString(format);
+            var sessionCity = StringExtensions.GenerateMaxAlphanumericString(50);
+            var sessionPostCode = "54-429";
+            var sessionAddress = StringExtensions.GenerateMaxAlphanumericString(50);
+            var sessionAdditionalInformation = StringExtensions.GenerateMaxAlphanumericString(500);
+            var examiner = "Objectivity 1 Test";
+            var level = new List<string> { "Ekspercki" };
+            var product = new Dictionary<string, int>
+            {
+                {"ISTQB Improving the Testing Process / Angielski", 999}
+            };
+            var expectedProduct = new List<string>
+            {
+                "ISTQB Improving the Testing Process/Angielski"
+            };
+
+            var dashboardPage = landingPage.OpenLandingPage()
+                .OpenLogInPage()
+                .SetEmail(email)
+                .SetPassword(password)
+                .LogIn();
+
+            var addSessionPage = dashboardPage.Topbar.OpenAddSession();
+
+            // Create session
+            addSessionPage.SetDate(sessionDate)
+                .SetPostCode(sessionPostCode)
+                .SetCity(sessionCity)
+                .SetAddress(sessionAddress)
+                .SetAdditionalInformation(sessionAdditionalInformation)
+                .SelectSpacePerProduct()
+                .SelectLevel(level)
+                .SelectProduct(product.Select(el => el.Key).ToList())
+                .SetProductSpace(product.Keys.First(), product.Values.First())
+                .SelectExaminer(examiner);
+
+            var sessionDetailsPage = addSessionPage.SaveSession();
+
+            // Check session details
+            sessionDetailsPage.Date.Should().Be(sessionDate.Split(' ')[0]);
+            sessionDetailsPage.Time.Should().Be(sessionDate.Split(' ')[1]);
+            sessionDetailsPage.Space.Should().Be(product.Select(el => el.Value).Sum());
+            sessionDetailsPage.Examiner.Should().Be(examiner);
+            sessionDetailsPage.PostCode.Should().Be(sessionPostCode);
+            sessionDetailsPage.City.Should().Be(sessionCity);
+            sessionDetailsPage.Address.Should().Be(sessionAddress);
+            sessionDetailsPage.AdditionalInformation.Should().Be(sessionAdditionalInformation);
+            sessionDetailsPage.Status.Should().Be("Nowy");
+
+            sessionDetailsPage.SwitchToExams();
+            sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
+
+            sessionDetailsPage.ExamsSpaceBasic.Should().Be(product.Select(el => el.Value).Take(1).Sum());
         }
 
         private int GetTimeStamp()

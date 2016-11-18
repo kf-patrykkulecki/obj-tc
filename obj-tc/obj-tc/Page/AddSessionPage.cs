@@ -11,7 +11,7 @@ namespace obj_tc.Page
     public class AddSessionPage : ProjectPageBase
     {
         private readonly ElementLocator dateInput = new ElementLocator(Locator.Id, "SessionDto_Date");
-        private readonly ElementLocator postCodeInput = new ElementLocator(Locator.Id, "SessionDto_Date");
+        private readonly ElementLocator postCodeInput = new ElementLocator(Locator.Id, "SessionDto_Location_PostalCode");
         private readonly ElementLocator cityInput = new ElementLocator(Locator.Id, "SessionDto_Location_City");
         private readonly ElementLocator addressInput = new ElementLocator(Locator.Id, "SessionDto_Location_Address");
         private readonly ElementLocator additionalInofrmationInput = new ElementLocator(Locator.Id, "SessionDto_AdditionalInformation");
