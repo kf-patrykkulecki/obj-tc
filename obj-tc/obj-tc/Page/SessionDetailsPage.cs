@@ -34,6 +34,8 @@ namespace obj_tc.Page
         {
         }
 
+        public TopbarPage Topbar => new TopbarPage(this.DriverContext);
+
         public string Status
         {
             get

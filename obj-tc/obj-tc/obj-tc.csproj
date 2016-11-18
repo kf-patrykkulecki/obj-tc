@@ -109,6 +109,7 @@
     <Compile Include="Page\LogInPage.cs" />
     <Compile Include="Page\RegisterPage.cs" />
     <Compile Include="Page\SessionDetailsPage.cs" />
+    <Compile Include="Page\TopbarPage.cs" />
     <Compile Include="ProjectPageBase.cs" />
     <Compile Include="ProjectTestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

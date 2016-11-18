@@ -23,7 +23,7 @@ namespace obj_tc.Tests
                 .SetPassword(password)
                 .LogIn();
 
-            dashboardPage.UserName.Should().Be(email);
+            dashboardPage.Topbar.UserName.Should().Be(email);
         }
     }
 }

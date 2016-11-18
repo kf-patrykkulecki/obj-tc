@@ -35,9 +35,13 @@ namespace obj_tc.Page
 
         private readonly ElementLocator saveSessionButton = new ElementLocator(Locator.CssSelector, ".Backoffice-buttonsContainerBottom [type='submit']");
 
+        private readonly ElementLocator errorMessage = new ElementLocator(Locator.CssSelector, ".field-validation-error");
+
         public AddSessionPage(DriverContext driverContext) : base(driverContext)
         {
         }
+
+        public string ErrorMessage => this.Driver.GetElement(errorMessage).Text;
 
         public AddSessionPage SetDate(string text)
         {

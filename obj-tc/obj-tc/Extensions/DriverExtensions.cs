@@ -47,5 +47,16 @@ namespace obj_tc.Extensions
             driver.WaitForElementToBeDisplayed(locator, BaseConfiguration.LongTimeout);
             driver.GetElement(locator).Click();
         }
+
+        public static bool IsElementPresentInDom(this IWebDriver driver, ElementLocator locator)
+        {
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(BaseConfiguration.ShortTimeout))
+            {
+                Message = "Element not present in DOM"
+            };
+            wait.Until(ExpectedConditions.ElementExists(locator.ToBy()));
+
+            return driver.FindElements(locator.ToBy()).Count > 0;
+        }
     }
 }

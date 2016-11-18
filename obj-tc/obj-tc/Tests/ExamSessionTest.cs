@@ -20,8 +20,10 @@ namespace obj_tc.Tests
         public void AddExamSessionForOneTypeOfExam_Test()
         {
             var landingPage = new LandingPage(DriverContext);
-            var sessionDate = date.AddDays(1).ToString(format);
 
+            // Data
+            var sessionDate = date.AddDays(1).ToString(format);
+            var sessionCity = GetTimeStamp();
             var level = new List<string> {"Podstawowy"};
             var product = new List<string> {"ISTQB Foundation Level / Polski, Angielski"};
             var expectedProduct = new List<string> {"ISTQB Foundation Level/Polski, Angielski"};
@@ -29,36 +31,43 @@ namespace obj_tc.Tests
             var dashboardPage =
                 landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn();
 
-            var addSessionPage = dashboardPage.AddSession();
+            var addSessionPage = dashboardPage.Topbar.OpenAddSession();
 
+            // Create session
             addSessionPage.SetDate(sessionDate)
-                .SetCity("Wrocław")
+                .SetCity(sessionCity.ToString())
                 .SelectSpacePerProduct()
                 .SelectLevel(level)
                 .SelectProduct(product);
 
             var sessionDetailsPage = addSessionPage.SaveSession();
 
+            // Check session details
             sessionDetailsPage.Date.Should().Be(sessionDate.Split(' ')[0]);
             sessionDetailsPage.Time.Should().Be(sessionDate.Split(' ')[1]);
             sessionDetailsPage.Space.Should().Be(0);
             sessionDetailsPage.Examiner.Should().BeEmpty();
             sessionDetailsPage.PostCode.Should().Be("-");
-            sessionDetailsPage.City.Should().Be("Wrocław");
+            sessionDetailsPage.City.Should().Be(sessionCity.ToString());
             sessionDetailsPage.Address.Should().Be("-");
             sessionDetailsPage.AdditionalInformation.Should().Be("-");
             sessionDetailsPage.Status.Should().Be("Zamknięta - niezalogowani");
 
             sessionDetailsPage.SwitchToExams();
             sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
+
+            // Check if session present on dashboard
+            sessionDetailsPage.Topbar.OpenDashboard().IsSessionDisplayed(sessionCity.ToString()).Should().BeTrue();
         }
 
         [Fact]
         public void AddExamSessionForFewTypesOfExamAtTheSameExamLevel_Test()
         {
             var landingPage = new LandingPage(DriverContext);
-            var sessionDate = date.AddDays(2).ToString(format);
 
+            // Data
+            var sessionDate = date.AddDays(2).ToString(format);
+            var sessionCity = GetTimeStamp();
             var level = new List<string> {"Podstawowy"};
             var product = new List<string>
             {
@@ -74,36 +83,43 @@ namespace obj_tc.Tests
             var dashboardPage =
                 landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn();
 
-            var addSessionPage = dashboardPage.AddSession();
+            var addSessionPage = dashboardPage.Topbar.OpenAddSession();
 
+            // Create session
             addSessionPage.SetDate(sessionDate)
-                .SetCity("Wrocław")
+                .SetCity(sessionCity.ToString())
                 .SelectSpacePerProduct()
                 .SelectLevel(level)
                 .SelectProduct(product);
 
             var sessionDetailsPage = addSessionPage.SaveSession();
 
+            // Check session details
             sessionDetailsPage.Date.Should().Be(sessionDate.Split(' ')[0]);
             sessionDetailsPage.Time.Should().Be(sessionDate.Split(' ')[1]);
             sessionDetailsPage.Space.Should().Be(0);
             sessionDetailsPage.Examiner.Should().BeEmpty();
             sessionDetailsPage.PostCode.Should().Be("-");
-            sessionDetailsPage.City.Should().Be("Wrocław");
+            sessionDetailsPage.City.Should().Be(sessionCity.ToString());
             sessionDetailsPage.Address.Should().Be("-");
             sessionDetailsPage.AdditionalInformation.Should().Be("-");
             sessionDetailsPage.Status.Should().Be("Zamknięta - niezalogowani");
 
             sessionDetailsPage.SwitchToExams();
             sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
+
+            // Check if session present on dashboard
+            sessionDetailsPage.Topbar.OpenDashboard().IsSessionDisplayed(sessionCity.ToString()).Should().BeTrue();
         }
 
         [Fact]
         public void AddExamSessionForFewTypesOfExamOnDifferentExamLevels_Test()
         {
             var landingPage = new LandingPage(DriverContext);
-            var sessionDate = date.AddDays(3).ToString(format);
 
+            // Data
+            var sessionDate = date.AddDays(3).ToString(format);
+            var sessionCity = GetTimeStamp();
             var level = new List<string>
             {
                 "Podstawowy",
@@ -137,36 +153,43 @@ namespace obj_tc.Tests
             var dashboardPage =
                 landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn();
 
-            var addSessionPage = dashboardPage.AddSession();
+            var addSessionPage = dashboardPage.Topbar.OpenAddSession();
 
+            // Create session
             addSessionPage.SetDate(sessionDate)
-                .SetCity("Wrocław")
+                .SetCity(sessionCity.ToString())
                 .SelectSpacePerProduct()
                 .SelectLevel(level)
                 .SelectProduct(product);
 
             var sessionDetailsPage = addSessionPage.SaveSession();
 
+            // Check session details
             sessionDetailsPage.Date.Should().Be(sessionDate.Split(' ')[0]);
             sessionDetailsPage.Time.Should().Be(sessionDate.Split(' ')[1]);
             sessionDetailsPage.Space.Should().Be(0);
             sessionDetailsPage.Examiner.Should().BeEmpty();
             sessionDetailsPage.PostCode.Should().Be("-");
-            sessionDetailsPage.City.Should().Be("Wrocław");
+            sessionDetailsPage.City.Should().Be(sessionCity.ToString());
             sessionDetailsPage.Address.Should().Be("-");
             sessionDetailsPage.AdditionalInformation.Should().Be("-");
             sessionDetailsPage.Status.Should().Be("Zamknięta - niezalogowani");
 
             sessionDetailsPage.SwitchToExams();
             sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
+
+            // Check if session present on dashboard
+            sessionDetailsPage.Topbar.OpenDashboard().IsSessionDisplayed(sessionCity.ToString()).Should().BeTrue();
         }
 
         [Fact]
         public void AddExamSessionWithMaximumNumberOfParticipantsDefinedPerExamType_Test()
         {
             var landingPage = new LandingPage(DriverContext);
-            var sessionDate = date.AddDays(4).ToString(format);
 
+            // Data
+            var sessionDate = date.AddDays(4).ToString(format);
+            var sessionCity = GetTimeStamp();
             var level = new List<string>
             {
                 "Podstawowy",
@@ -198,10 +221,11 @@ namespace obj_tc.Tests
             };
 
             var addSessionPage =
-                landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn().AddSession();
+                landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn().Topbar.OpenAddSession();
 
+            // Create session
             addSessionPage.SetDate(sessionDate)
-                .SetCity("Wrocław")
+                .SetCity(sessionCity.ToString())
                 .SelectSpacePerProduct()
                 .SelectLevel(level)
                 .SelectProduct(product.Select(el => el.Key).ToList());
@@ -213,23 +237,27 @@ namespace obj_tc.Tests
 
             var sessionDetailsPage = addSessionPage.SaveSession();
 
+            // Check session details
             sessionDetailsPage.Date.Should().Be(sessionDate.Split(' ')[0]);
             sessionDetailsPage.Time.Should().Be(sessionDate.Split(' ')[1]);
             sessionDetailsPage.Space.Should().Be(product.Select(el => el.Value).Sum());
             sessionDetailsPage.Examiner.Should().BeEmpty();
             sessionDetailsPage.PostCode.Should().Be("-");
-            sessionDetailsPage.City.Should().Be("Wrocław");
+            sessionDetailsPage.City.Should().Be(sessionCity.ToString());
             sessionDetailsPage.Address.Should().Be("-");
             sessionDetailsPage.AdditionalInformation.Should().Be("-");
             sessionDetailsPage.Status.Should().Be("Nowy");
 
             sessionDetailsPage.SwitchToExams();
             sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
-            // Czy chcemy zliczać i sprawdzać osobno dla każdego typu egzmainu?
+
             sessionDetailsPage.ExamsSpaceBasic.Should().Be(product.Select(el => el.Value).Take(2).Sum());
             sessionDetailsPage.ExamsSpaceAdvanced.Should().Be(product.Select(el => el.Value).Skip(2).Take(3).Sum());
             sessionDetailsPage.ExamsSpaceExpert.Should().Be(product.Select(el => el.Value).Skip(5).Take(2).Sum());
             sessionDetailsPage.ExamsSpaceOther.Should().Be(product.Select(el => el.Value).Skip(7).Take(1).Sum());
+
+            // Check if session present on dashboard
+            sessionDetailsPage.Topbar.OpenDashboard().IsSessionDisplayed(sessionCity.ToString()).Should().BeTrue();
         }
 
         [Fact]
@@ -242,7 +270,45 @@ namespace obj_tc.Tests
         public void AddExamSessionAndActivateCreatedSession_Test()
         {
             var landingPage = new LandingPage(DriverContext);
+
+            // Data
             var sessionDate = date.AddDays(8).ToString(format);
+            var sessionCity = GetTimeStamp();
+            var level = new List<string> { "Zaawansowany" };
+            var product = new Dictionary<string, int>
+            {
+                {"ISTQB Advanced Level Test Manager / Polski, Angielski", 999}
+            };
+
+            var dashboardPage =
+                landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn();
+
+            var addSessionPage = dashboardPage.Topbar.OpenAddSession();
+
+            // Create session
+            addSessionPage.SetDate(sessionDate)
+                .SetCity(sessionCity.ToString())
+                .SelectSpacePerProduct()
+                .SelectLevel(level)
+                .SelectProduct(product.Select(el => el.Key).ToList())
+                .SetProductSpace(product.Keys.First(), product.Values.First());
+
+            // Activate session
+            var sessionDetailsPage = addSessionPage.SaveSession().ActivateSession();
+
+            sessionDetailsPage.Status.Should().Be("Otwarta");
+
+            // Check if session present on dashboard
+            sessionDetailsPage.Topbar.OpenDashboard().IsSessionDisplayed(sessionCity.ToString()).Should().BeTrue();
+        }
+
+        [Fact]
+        public void AddExamSessionAndCheckDuplicate_Test()
+        {
+            var landingPage = new LandingPage(DriverContext);
+
+            var sessionDate = date.AddDays(1).ToString(format);
+            var sessionCity = GetTimeStamp();
 
             var level = new List<string> { "Podstawowy" };
             var product = new Dictionary<string, int>
@@ -250,23 +316,39 @@ namespace obj_tc.Tests
                 {"ISTQB Foundation Level / Polski, Angielski", 999}
             };
 
-            var dashboardPage =
-                landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn();
+            var dashboardPage = landingPage.OpenLandingPage()
+                .OpenLogInPage()
+                .SetEmail(email)
+                .SetPassword(password)
+                .LogIn();
 
-            var addSessionPage = dashboardPage.AddSession();
+            var addSessionPage = dashboardPage.Topbar.OpenAddSession();
 
             addSessionPage.SetDate(sessionDate)
-                .SetCity("Wrocław")
+                .SetCity(sessionCity.ToString())
                 .SelectSpacePerProduct()
                 .SelectLevel(level)
                 .SelectProduct(product.Select(el => el.Key).ToList())
                 .SetProductSpace(product.Keys.First(), product.Values.First());
 
-            var sessionDetailsPage = addSessionPage.SaveSession().ActivateSession();
+            var sessionDetailsPage = addSessionPage.SaveSession();
 
-            sessionDetailsPage.Status.Should().Be("Otwarta");
+            sessionDetailsPage.Topbar.OpenAddSession();
 
-            // Czy powinnismy sprawdzać na landing pagu czy sesje się pojawiły?
+            addSessionPage.SetDate(sessionDate)
+                .SetCity(sessionCity.ToString())
+                .SelectSpacePerProduct()
+                .SelectLevel(level)
+                .SelectProduct(product.Select(el => el.Key).ToList())
+                .SetProductSpace(product.Keys.First(), product.Values.First()).SaveSession();
+
+            addSessionPage.ErrorMessage.Should()
+                .Be("Operacja nie może zostać zrealizowana. Identyczny produkt jest już zdefiniowany.");
+        }
+
+        private int GetTimeStamp()
+        {
+            return (int)(date.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
         }
     }
 }
