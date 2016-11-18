@@ -11,6 +11,8 @@ namespace obj_tc.Page
         private readonly ElementLocator userName = new ElementLocator(Locator.CssSelector, ".userName");
         private readonly ElementLocator addSessionLink = new ElementLocator(Locator.Id, "navItem-Session");
         private readonly ElementLocator dashboardLink = new ElementLocator(Locator.Id, "navItem-Dashboard");
+        private readonly ElementLocator registrationLink = new ElementLocator(Locator.Id, "navItem-Registration");
+        private readonly ElementLocator productsLink = new ElementLocator(Locator.Id, "navItem-Products");
 
         public TopbarPage(DriverContext driverContext) : base(driverContext)
         {
@@ -35,6 +37,18 @@ namespace obj_tc.Page
         {
             this.Driver.Click(dashboardLink);
             return new DashboardPage(this.DriverContext);
+        }
+
+        public RegisterPage OpenRegistration()
+        {
+            this.Driver.Click(registrationLink);
+            return new RegisterPage(this.DriverContext);
+        }
+
+        public void OpenProducts()
+        {
+            //TODO if implemented
+            this.Driver.Click(productsLink);
         }
     }
 }

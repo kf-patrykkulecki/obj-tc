@@ -29,6 +29,8 @@ namespace obj_tc.Page
         private readonly ElementLocator examsSpaceAdvanced = new ElementLocator(Locator.CssSelector, ".Exam-levelPart:nth-of-type(3) .Exam-levelFreePlaces span");
         private readonly ElementLocator examsSpaceExpert = new ElementLocator(Locator.CssSelector, ".Exam-levelPart:nth-of-type(5) .Exam-levelFreePlaces span");
         private readonly ElementLocator examsSpaceOther = new ElementLocator(Locator.CssSelector, ".Exam-levelPart:nth-of-type(7) .Exam-levelFreePlaces span");
+        // Edit
+        private readonly ElementLocator editSessionButton = new ElementLocator(Locator.CssSelector, ".Backoffice-actionButtons a");
         
         public SessionDetailsPage(DriverContext driverContext) : base(driverContext)
         {
@@ -145,6 +147,12 @@ namespace obj_tc.Page
             this.Driver.Click(sessionActivateButton);
             this.Driver.JavaScriptAlert().ConfirmJavaScriptAlert();
             return this;
+        }
+
+        public void EditSession()
+        {
+            //TODO if implemented
+            this.Driver.Click(editSessionButton);
         }
     }
 }
