@@ -143,6 +143,7 @@ namespace obj_tc.Page
         {
             this.Driver.Click(sessionActivateButton);
             this.Driver.JavaScriptAlert().ConfirmJavaScriptAlert();
+            this.Driver.WaitForAjax();
             return this;
         }
 

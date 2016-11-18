@@ -9,6 +9,7 @@ namespace obj_tc.Page
     public class LandingPage : ProjectPageBase
     {
         private readonly ElementLocator logInLink = new ElementLocator(Locator.Id, "loginLink");
+        private readonly ElementLocator registerIndividual = new ElementLocator(Locator.XPath, "//h5[contains(., '{0}')]/ancestor::div[contains(@class, 'Agenda-dateRow')]/following-sibling::div[contains(@class, 'Agenda-dateContentContainer')]//td[contains(@class, 'btn')]");
 
         public LandingPage(DriverContext driverContext) : base(driverContext)
         {
@@ -25,6 +26,12 @@ namespace obj_tc.Page
         {
             this.Driver.Click(logInLink);
             return new LogInPage(DriverContext);
+        }
+
+        public RegisterPage RegisterToSession(string text)
+        {
+            this.Driver.Click(registerIndividual.Format(text));
+            return new RegisterPage(this.DriverContext);
         }
     }
 }

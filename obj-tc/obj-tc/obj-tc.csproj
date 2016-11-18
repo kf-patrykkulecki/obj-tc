@@ -118,6 +118,7 @@
     <Compile Include="Tests\ExamSessionTest.cs" />
     <Compile Include="Tests\LogInTest.cs" />
     <Compile Include="Tests\PasswordResetTest.cs" />
+    <Compile Include="Tests\RegistrationTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
