@@ -56,6 +56,7 @@ namespace obj_tc.Tests
 
             sessionDetailsPage.SwitchToExams();
             sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
+            sessionDetailsPage.ExamsSpaceBasic.Should().Be(0);
 
             // Check if session present on dashboard
             sessionDetailsPage.Topbar.OpenDashboard().IsSessionDisplayed(sessionCity.ToString()).Should().BeTrue();
@@ -108,6 +109,7 @@ namespace obj_tc.Tests
 
             sessionDetailsPage.SwitchToExams();
             sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
+            sessionDetailsPage.ExamsSpaceBasic.Should().Be(0);
 
             // Check if session present on dashboard
             sessionDetailsPage.Topbar.OpenDashboard().IsSessionDisplayed(sessionCity.ToString()).Should().BeTrue();
@@ -178,6 +180,10 @@ namespace obj_tc.Tests
 
             sessionDetailsPage.SwitchToExams();
             sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
+            sessionDetailsPage.ExamsSpaceBasic.Should().Be(0);
+            sessionDetailsPage.ExamsSpaceAdvanced.Should().Be(0);
+            sessionDetailsPage.ExamsSpaceExpert.Should().Be(0);
+            sessionDetailsPage.ExamsSpaceOther.Should().Be(0);
 
             // Check if session present on dashboard
             sessionDetailsPage.Topbar.OpenDashboard().IsSessionDisplayed(sessionCity.ToString()).Should().BeTrue();
@@ -406,8 +412,7 @@ namespace obj_tc.Tests
 
             sessionDetailsPage.SwitchToExams();
             sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
-
-            sessionDetailsPage.ExamsSpaceBasic.Should().Be(product.Select(el => el.Value).Take(1).Sum());
+            sessionDetailsPage.ExamsSpaceExpert.Should().Be(product.Select(el => el.Value).Take(1).Sum());
         }
 
         [Fact]
@@ -467,8 +472,7 @@ namespace obj_tc.Tests
 
             sessionDetailsPage.SwitchToExams();
             sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
-
-            sessionDetailsPage.ExamsSpaceBasic.Should().Be(product.Select(el => el.Value).Take(1).Sum());
+            sessionDetailsPage.ExamsSpaceExpert.Should().Be(product.Select(el => el.Value).Take(1).Sum());
         }
 
         private int GetTimeStamp()

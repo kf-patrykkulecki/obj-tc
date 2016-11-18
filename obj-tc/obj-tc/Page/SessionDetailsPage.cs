@@ -25,10 +25,7 @@ namespace obj_tc.Page
         private readonly ElementLocator sessionAdditionalInformation = new ElementLocator(Locator.CssSelector, ".Backoffice-contentContainer > div > div:nth-of-type(2) > .BackofficeDetails-item:nth-of-type(3) .BackofficeDetails-content");
         // Exams
         private readonly ElementLocator examsList = new ElementLocator(Locator.CssSelector, ".Exam-examList .Exam-examItem > div");
-        private readonly ElementLocator examsSpaceBasic = new ElementLocator(Locator.CssSelector, ".Exam-levelPart:nth-of-type(1) .Exam-levelFreePlaces span");
-        private readonly ElementLocator examsSpaceAdvanced = new ElementLocator(Locator.CssSelector, ".Exam-levelPart:nth-of-type(3) .Exam-levelFreePlaces span");
-        private readonly ElementLocator examsSpaceExpert = new ElementLocator(Locator.CssSelector, ".Exam-levelPart:nth-of-type(5) .Exam-levelFreePlaces span");
-        private readonly ElementLocator examsSpaceOther = new ElementLocator(Locator.CssSelector, ".Exam-levelPart:nth-of-type(7) .Exam-levelFreePlaces span");
+        private readonly ElementLocator examsSpace = new ElementLocator(Locator.XPath, "//div[text() = '{0}']/following-sibling::div/span");
         // Edit
         private readonly ElementLocator editSessionButton = new ElementLocator(Locator.CssSelector, ".Backoffice-actionButtons a");
         
@@ -128,13 +125,13 @@ namespace obj_tc.Page
             }
         }
 
-        public int ExamsSpaceBasic => int.Parse(this.Driver.GetElement(examsSpaceBasic).Text.Split(' ')[2]);
+        public int ExamsSpaceBasic => int.Parse(this.Driver.GetElement(examsSpace.Format("Podstawowy")).Text.Split(' ')[2]);
 
-        public int ExamsSpaceAdvanced => int.Parse(this.Driver.GetElement(examsSpaceAdvanced).Text.Split(' ')[2]);
+        public int ExamsSpaceAdvanced => int.Parse(this.Driver.GetElement(examsSpace.Format("Zaawansowany")).Text.Split(' ')[2]);
 
-        public int ExamsSpaceExpert => int.Parse(this.Driver.GetElement(examsSpaceExpert).Text.Split(' ')[2]);
+        public int ExamsSpaceExpert => int.Parse(this.Driver.GetElement(examsSpace.Format("Ekspercki")).Text.Split(' ')[2]);
 
-        public int ExamsSpaceOther => int.Parse(this.Driver.GetElement(examsSpaceOther).Text.Split(' ')[2]);
+        public int ExamsSpaceOther => int.Parse(this.Driver.GetElement(examsSpace.Format("Inny")).Text.Split(' ')[2]);
 
         public SessionDetailsPage SwitchToExams()
         {
