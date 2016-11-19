@@ -37,11 +37,20 @@ namespace obj_tc.Page
 
         private readonly ElementLocator errorMessage = new ElementLocator(Locator.CssSelector, ".field-validation-error");
 
+        private readonly ElementLocator cityValidationMessage = new ElementLocator(Locator.CssSelector, "span[data-valmsg-for='SessionDto.Location.City']");
+        private readonly ElementLocator dateValidationMessage = new ElementLocator(Locator.CssSelector, "span[data-valmsg-for='SessionDto.Date']");
+        private readonly ElementLocator productValidationMessage = new ElementLocator(Locator.CssSelector, "span[data-valmsg-for='SessionDto.Products']");
+
+
         public AddSessionPage(DriverContext driverContext) : base(driverContext)
         {
         }
 
         public string ErrorMessage => this.Driver.GetElement(errorMessage).Text;
+
+        public string cityValidationText => this.Driver.GetElement(cityValidationMessage).Text;
+        public string dateValidationText => this.Driver.GetElement(dateValidationMessage).Text;
+        public string productValidationText => this.Driver.GetElement(productValidationMessage).Text;
 
         public AddSessionPage SetDate(string text)
         {
@@ -137,5 +146,12 @@ namespace obj_tc.Page
             this.Driver.Click(saveSessionButton);
             return new SessionDetailsPage(DriverContext);
         }
+
+        public AddSessionPage SaveSessionReturnAddSession()
+        {
+            this.Driver.Click(saveSessionButton);
+            return this;
+        }
+
     }
 }

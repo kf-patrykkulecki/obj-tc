@@ -115,6 +115,7 @@
     <Compile Include="ProjectTestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestFixture.cs" />
+    <Compile Include="Tests\AddSessionFormTest.cs" />
     <Compile Include="Tests\ExamSessionTest.cs" />
     <Compile Include="Tests\LogInTest.cs" />
     <Compile Include="Tests\PasswordResetTest.cs" />
