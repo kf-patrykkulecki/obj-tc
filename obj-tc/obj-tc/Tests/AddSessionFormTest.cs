@@ -138,6 +138,74 @@ namespace obj_tc.Tests
 
         }
 
+        [Theory]
+        [InlineData("-1")]
+        [InlineData("30.12 12:55")]
+        [InlineData("30.12.0000 12:55")]
+        [InlineData("32.11.2016 12:55")]
+        [InlineData("19.13.2016 12:55")]
+        [InlineData("00.00.2016 12:55")]
+        [InlineData("30.12.2016 25:00")]
+        [InlineData("30.12.2016 21:60")]
+        [InlineData("29.02.2017 01:00")]
+        public void CheckNegativeDates_Test(string testDate) {
+            var landingPage = new LandingPage(DriverContext);
+            var dashboardPage =
+                landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn();
+            var addSessionPage = dashboardPage.Topbar.OpenAddSession();
+            var city = "Parowkowo";
+            var examDate = date.AddDays(2).ToString(format);
+            var level = new List<string> { "Ekspercki" };
+            var product = new Dictionary<string, int>
+            {
+                {"ISTQB Improving the Testing Process / Angielski", 999}
+            };
+            var expectedProduct = new List<string>
+            {
+                "ISTQB Improving the Testing Process/Angielski"
+            };
+
+            addSessionPage.SetCity(city);
+            addSessionPage.SetDate(examDate);
+            addSessionPage.SetDate(testDate);
+
+            var result = addSessionPage.SaveSessionReturnAddSession();
+
+            result.dateValidationPresent.Should().BeTrue();
+            result.dateValidationText.Should().Be("Pole Date jest wymagane");
+        }
+
+        [Theory]
+        [InlineData("29.02.2020 01:00")]
+        [InlineData("30.12.2016 00:00")]
+        public void CheckLeapYear_Test(string inputDate) {
+            var landingPage = new LandingPage(DriverContext);
+            var dashboardPage =
+                landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn();
+            var addSessionPage = dashboardPage.Topbar.OpenAddSession();
+            string city =Convert.ToString( GetTimeStamp());
+            var testDate = inputDate;
+            var level = new List<string> { "Ekspercki" };
+            var product = new Dictionary<string, int>
+            {
+                {"ISTQB Improving the Testing Process / Angielski", 999}
+            };
+            var expectedProduct = new List<string>
+            {
+                "ISTQB Improving the Testing Process/Angielski"
+            };
+
+            addSessionPage.SetCity(city);
+            addSessionPage.SetDate(testDate);
+
+            addSessionPage.SelectLevel(level)
+              .SelectProduct(product.Select(el => el.Key).ToList());
+
+            var sessionDetailsPage = addSessionPage.SaveSession();
+            sessionDetailsPage.Date.Should().Be(testDate.Split(' ')[0]);
+            sessionDetailsPage.Time.Should().Be(testDate.Split(' ')[1]);
+        }
+
         private int GetTimeStamp()
         {
             return (int)(date.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
