@@ -39,7 +39,7 @@ namespace obj_tc.Tests
             var result = addSessionPage.SaveSessionReturnAddSession();
 
             result.cityValidationText.Should().Be("Pole City jest wymagane");
-
+            
             addSessionPage.SetCity("Ko");
 
             result = addSessionPage.SaveSessionReturnAddSession();
@@ -51,12 +51,15 @@ namespace obj_tc.Tests
             result = addSessionPage.SaveSessionReturnAddSession();
 
             result.dateValidationText.Should().Be("Pole Date jest wymagane");
+            result.cityValidationPresent.Should().BeFalse();
 
             addSessionPage.SetDate(examDate);
 
             result = addSessionPage.SaveSessionReturnAddSession();
 
             result.productValidationText.Should().Be("Musisz wybrać co najmniej jeden produkt");
+            result.cityValidationPresent.Should().BeFalse();
+            result.dateValidationPresent.Should().BeFalse();
 
             addSessionPage.SelectLevel(level)
                 .SelectProduct(product.Select(el => el.Key).ToList());
@@ -68,7 +71,70 @@ namespace obj_tc.Tests
             sessionDetailsPage.City.Should().Be(city);
 
             sessionDetailsPage.SwitchToExams();
-            sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);     
+            sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
+                 
+        }
+
+        [Theory]
+        [InlineData("Bielsko-Biała")]
+        [InlineData("Żółwia błoć")]
+        [InlineData("ąęźżćśóńł")]
+        [InlineData("Kon")]
+        [InlineData("asdsbvewghmhffdmnbfdffhjjhbvrerhtjyngbfeghnjbrefgm")]
+        public void CheckCityNameExamples_Test(string city) {
+            var landingPage = new LandingPage(DriverContext);
+            var dashboardPage =
+                landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn();
+            var examDate = date.AddDays(2).ToString(format);
+            var level = new List<string> { "Ekspercki" };
+            var product = new Dictionary<string, int>
+            {
+                {"ISTQB Improving the Testing Process / Angielski", 999}
+            };
+            var expectedProduct = new List<string>
+            {
+                "ISTQB Improving the Testing Process/Angielski"
+            };
+            var addSessionPage = dashboardPage.Topbar.OpenAddSession();
+
+            addSessionPage.SetCity(city);
+
+            var result = addSessionPage.SaveSessionReturnAddSession();
+
+            result.cityValidationPresent.Should().BeFalse();
+
+            addSessionPage.SetDate(examDate);
+            addSessionPage.SelectLevel(level)
+                .SelectProduct(product.Select(el => el.Key).ToList());
+
+            var sessionDetailsPage = addSessionPage.SaveSession();
+
+            sessionDetailsPage.City.Should().Be(city);
+        }
+
+        [Theory]
+        [InlineData("Ko")]
+        [InlineData("asdsbvewghmhffdmnbfdffhjjhbvrerhtjyngbfeghnjbrefgm ")]
+        [InlineData("asdsbvewghmhffdmnbfdffhjjhbvrerhtjyngbfeghnjbrefgma")]
+        [InlineData("    ")]
+        public void CheckCityNameLengthPositive_Test(string city) {
+            var landingPage = new LandingPage(DriverContext);
+            var dashboardPage =
+                landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn();
+            var addSessionPage = dashboardPage.Topbar.OpenAddSession();
+
+
+            addSessionPage.SetCity(city);
+
+            var result = addSessionPage.SaveSessionReturnAddSession();
+            if (city.Equals("    "))
+            {
+                result.cityValidationText.Should().Be("Pole City jest wymagane");
+            }
+            else
+            {
+                result.cityValidationText.Should().Be("Pole musi być ciągiem o minimalnej długości 3 i maksymalnej długości 50.");
+            }
 
         }
 

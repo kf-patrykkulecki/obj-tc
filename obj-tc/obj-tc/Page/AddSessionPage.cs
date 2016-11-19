@@ -52,6 +52,10 @@ namespace obj_tc.Page
         public string dateValidationText => this.Driver.GetElement(dateValidationMessage).Text;
         public string productValidationText => this.Driver.GetElement(productValidationMessage).Text;
 
+        public bool cityValidationPresent => this.Driver.IsElementPresent(cityValidationMessage, 3);
+        public bool dateValidationPresent => this.Driver.IsElementPresent(dateValidationMessage, 3);
+        public bool productValidationPresent => this.Driver.IsElementPresent(productValidationMessage, 3);
+
         public AddSessionPage SetDate(string text)
         {
             this.Driver.Click(dateInput);
