@@ -40,6 +40,12 @@ namespace obj_tc.Page
         private readonly ElementLocator invoiceAddress = new ElementLocator(Locator.Id, "AddressDto_InvoiceAddress");
         private readonly ElementLocator invoiceNip = new ElementLocator(Locator.Id, "AddressDto_InvoiceNIP");
         private readonly ElementLocator invoiceEmail = new ElementLocator(Locator.Id, "AddressDto_InvoiceEmail");
+        // Address 
+        private ElementLocator letterData = new ElementLocator(Locator.CssSelector, "[name = 'AddressDto.InvoiceAddressIsTheSame'] + label");
+        private ElementLocator letterCompany = new ElementLocator(Locator.Id, "AddressDto_LetterCompanyName");
+        private ElementLocator letterPostCode = new ElementLocator(Locator.Id, "AddressDto_LetterPostalCode");
+        private ElementLocator letterCity = new ElementLocator(Locator.Id, "AddressDto_LetterCity");
+        private ElementLocator letterAddress = new ElementLocator(Locator.Id, "AddressDto_LetterAddress");
         // Complete
         private readonly ElementLocator examName = new ElementLocator(Locator.CssSelector, ".RegisterComplete-products .u-isRegular");
         private readonly ElementLocator contactEmail = new ElementLocator(Locator.Id, "contact-email");
@@ -99,16 +105,19 @@ namespace obj_tc.Page
             this.Driver.SendKeys(nameInput, text);
             return this;
         }
+
         public RegisterPage SetSurname(string text)
         {
             this.Driver.SendKeys(surnameInput, text);
             return this;
         }
+
         public RegisterPage SetEmail(string text)
         {
             this.Driver.SendKeys(emailInput, text);
             return this;
         }
+
         public RegisterPage SetPhone(string text)
         {
             this.Driver.SendKeys(phoneInput, text);
@@ -214,6 +223,36 @@ namespace obj_tc.Page
         public RegisterPage SetInvoiceEmail(string text)
         {
             this.Driver.SendKeys(invoiceEmail, text);
+            return this;
+        }
+
+        public RegisterPage SetDifferentAddress()
+        {
+            this.Driver.Click(letterData);
+            return this;
+        }
+
+        public RegisterPage SetLetterComapny(string text)
+        {
+            this.Driver.SendKeys(letterCompany, text);
+            return this;
+        }
+
+        public RegisterPage SetLetterPostCode(string text)
+        {
+            this.Driver.SendKeys(letterPostCode, text);
+            return this;
+        }
+
+        public RegisterPage SetLetterCity(string text)
+        {
+            this.Driver.SendKeys(letterCity, text);
+            return this;
+        }
+
+        public RegisterPage SetLetterAddress(string text)
+        {
+            this.Driver.SendKeys(letterAddress, text);
             return this;
         }
     }

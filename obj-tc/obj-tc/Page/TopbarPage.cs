@@ -13,6 +13,7 @@ namespace obj_tc.Page
         private readonly ElementLocator dashboardLink = new ElementLocator(Locator.Id, "navItem-Dashboard");
         private readonly ElementLocator registrationLink = new ElementLocator(Locator.Id, "navItem-Registration");
         private readonly ElementLocator productsLink = new ElementLocator(Locator.Id, "navItem-Products");
+        private readonly ElementLocator logOut = new ElementLocator(Locator.CssSelector, ".Navbar-userMenu [href *= 'LogOff']");
 
         public TopbarPage(DriverContext driverContext) : base(driverContext)
         {
@@ -49,6 +50,14 @@ namespace obj_tc.Page
         {
             this.Driver.Click(productsLink);
             return new ProductListPage(DriverContext);
+        }
+
+        public LandingPage LogOut()
+        {
+            this.Driver.Click(userName);
+            this.Driver.WaitForElementToBeDisplayed(logOut);
+            this.Driver.Click(logOut);
+            return new LandingPage(DriverContext);
         }
     }
 }

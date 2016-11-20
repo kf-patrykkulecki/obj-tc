@@ -342,6 +342,134 @@ namespace obj_tc.Tests
            
         }
 
+        [Fact]
+        public void RegisterToExamInOrderToParticipateInItAsNotLoggedUser_Test()
+        {
+            var landingPage = new LandingPage(DriverContext);
+
+            // Prepare exam session 
+            var examiner = "Objectivity 1 Test";
+            var sessionDate = date.AddDays(1).ToString(format);
+            var sessionCity = GetTimeStamp();
+            var sessionPostCode = "54-429";
+            var sessionAddress = StringExtensions.GenerateMaxAlphanumericString(50);
+            var sessionAdditionalInformation = StringExtensions.GenerateMaxAlphanumericString(500);
+            var level = new List<string> { "Inny" };
+            var product = new Dictionary<string, int>
+            {
+                {"ISTQB Agile Tester Extension / Polski, Angielski", 1}
+            };
+            var contactUserName = StringExtensions.GenerateMaxAlphanumericString(50);
+            var contactUserSurname = StringExtensions.GenerateMaxAlphanumericString(50);
+            var contactUserEmail = "test@test.pl";
+            var contactUserPostCode = "54-420";
+            var contactUserCity = StringExtensions.GenerateMaxAlphanumericString(50);
+            var contactUserAddress = StringExtensions.GenerateMaxAlphanumericString(50);
+            var contactUserComment = StringExtensions.GenerateMaxAlphanumericString(500);
+
+            var dashboardPage =
+                landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn();
+
+            var addSessionPage = dashboardPage.Topbar.OpenAddSession();
+
+            // Create session
+            addSessionPage.SetDate(sessionDate)
+                .SetPostCode(sessionPostCode)
+                .SetCity(sessionCity.ToString())
+                .SetAddress(sessionAddress)
+                .SetAdditionalInformation(sessionAdditionalInformation)
+                .SetSpacePerSession(product.Select(el => el.Value).First().ToString())
+                .SelectLevel(level)
+                .SelectProduct(product.Select(el => el.Key).ToList())
+                .SelectExaminer(examiner);
+
+            // Activate session
+            var sessionDetailsPage = addSessionPage.SaveSession().ActivateSession();
+
+            sessionDetailsPage.Status.Should().Be("Otwarta - potwierdzony");
+
+            // Register to session
+            var registerPage = sessionDetailsPage.Topbar.LogOut().RegisterToSession(sessionCity.ToString());
+            var invoiceCompany = StringExtensions.GenerateMaxAlphanumericString(50);
+            var invoiceCtiy = StringExtensions.GenerateMaxAlphanumericString(50);
+            var invoiceAddress = StringExtensions.GenerateMaxAlphanumericString(50);
+            var invoiceNip = "898-198-44-82";
+
+            var letterCity = StringExtensions.GenerateMaxAlphanumericString(50);
+            var letterCompany = StringExtensions.GenerateMaxAlphanumericString(50);
+            var letterPostCode = "54-450";
+            var letterAddress = StringExtensions.GenerateMaxAlphanumericString(50);
+
+            registerPage.SelectLanguage("Polski")
+                .SelectForm("papierowa")
+                .GoForward()
+                .SetName(contactUserName)
+                .SetSurname(contactUserSurname)
+                .SetEmail(contactUserEmail)
+                .GoForward()
+                .SetCertificateName(contactUserName)
+                .SetCertificateSurname(contactUserSurname)
+                .SetCertificatePostCode(contactUserPostCode)
+                .SetCertificateCity(contactUserCity)
+                .SetCertificateAddres(contactUserAddress)
+                .SetCertificateComment(contactUserComment)
+                .SelectPaperInvoice()
+                .SetInvoiceCompany(invoiceCompany)
+                .SetInvoiceNip(invoiceNip)
+                .SetDifferentAddress()
+                .SetLetterComapny(letterCompany)
+                .SetLetterCity(letterCity)
+                .SetLetterPostCode(letterPostCode)
+                .SetLetterAddress(letterAddress)
+                .SelectAcceptPrivacyPolicy()
+                .GoForward();
+
+            registerPage.SuccessExamName.Should().Be(product.Select(el => el.Key).First().Split('/')[0].Trim());
+            registerPage.SuccessCntactEmail.Should().Be(contactUserEmail);
+            registerPage.SuccessThankyouMessage.Should().Be("Dziękujemy za zapisanie się na egzamin");
+
+            //TODO improve assertions
+            landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn();
+            var registerDetailsPage = registerPage.Topbar.OpenRegistration().OpenRegistrationDetails(contactUserName);
+
+            var currentDetails = registerDetailsPage.Details;
+
+            currentDetails[0].Should().Be(sessionDate);
+            currentDetails[1].Should().Be(product.Select(el => el.Key).First().Split('/')[0].Trim());
+            currentDetails[2].Should().Be(product.Select(el => el.Key).First().Split('/')[1].Trim().Split(',')[0]);
+            currentDetails[3].Should().Be("papierowa");
+            currentDetails[4].Should().Be(sessionPostCode);
+            currentDetails[5].Should().Be(sessionCity.ToString());
+            currentDetails[6].Should().Be(sessionAddress);
+            currentDetails[7].Should().Be("-");
+            currentDetails[8].Should().Be("-");
+            currentDetails[9].Should().Be("-");
+
+            registerDetailsPage.OpenPersonDetails();
+
+            var currentPersonDetails = registerDetailsPage.PersonDetails;
+
+            currentPersonDetails[0].Should().Be(contactUserName);
+            currentPersonDetails[1].Should().Be(contactUserSurname);
+            currentPersonDetails[2].Should().Be(contactUserEmail);
+            currentPersonDetails[3].Should().Be("-");
+
+            registerDetailsPage.OpenCertDetails();
+
+            var currentCertDetails = registerDetailsPage.CertDetails;
+
+            currentCertDetails[0].Should().Be(contactUserName);
+            currentCertDetails[1].Should().Be(contactUserSurname);
+            currentCertDetails[2].Should().Be(contactUserPostCode);
+            currentCertDetails[3].Should().Be(contactUserCity);
+            currentCertDetails[4].Should().Be(contactUserAddress);
+            currentCertDetails[5].Should().Be(invoiceCompany);
+            currentCertDetails[6].Should().Be(contactUserPostCode);
+            currentCertDetails[7].Should().Be(contactUserCity);
+            currentCertDetails[8].Should().Be(contactUserAddress);
+            currentCertDetails[9].Should().Be(invoiceNip.Replace("-", string.Empty));
+        }
+
         private int GetTimeStamp()
         {
             return (int)(date.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
