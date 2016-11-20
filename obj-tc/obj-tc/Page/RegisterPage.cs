@@ -33,6 +33,13 @@ namespace obj_tc.Page
         private readonly ElementLocator paperInvoiceRadio = new ElementLocator(Locator.CssSelector, "label[for='AddressDto_InvoiceTypesPaper']");
         private readonly ElementLocator acceptPrivacyPolicyRadio = new ElementLocator(Locator.CssSelector, "label[for='AddressDto_AcceptedPrivacyPolicy']");
         private readonly ElementLocator acceptMarketingPolicyRadio = new ElementLocator(Locator.CssSelector, "label[for='AddressDto_AcceptedMarketingPolicy']");
+        // Invoice
+        private readonly ElementLocator invoiceCompany = new ElementLocator(Locator.Id, "AddressDto_InvoiceCompanyName");
+        private readonly ElementLocator invoicePostCode = new ElementLocator(Locator.Id, "AddressDto_InvoicePostalCode");
+        private readonly ElementLocator invoiceCity = new ElementLocator(Locator.Id, "AddressDto_InvoiceCity");
+        private readonly ElementLocator invoiceAddress = new ElementLocator(Locator.Id, "AddressDto_InvoiceAddress");
+        private readonly ElementLocator invoiceNip = new ElementLocator(Locator.Id, "AddressDto_InvoiceNIP");
+        private readonly ElementLocator invoiceEmail = new ElementLocator(Locator.Id, "AddressDto_InvoiceEmail");
         // Complete
         private readonly ElementLocator examName = new ElementLocator(Locator.CssSelector, ".RegisterComplete-products .u-isRegular");
         private readonly ElementLocator contactEmail = new ElementLocator(Locator.Id, "contact-email");
@@ -173,6 +180,41 @@ namespace obj_tc.Page
             this.Driver.Click(acceptMarketingPolicyRadio);
             return this;
         }
-       
+        
+        public RegisterPage SetInvoiceCompany(string text)
+        {
+            this.Driver.SendKeys(invoiceCompany, text);
+            return this;
+        }
+
+        public RegisterPage SetInvoicePostCode(string text)
+        {
+            this.Driver.SendKeys(invoicePostCode, text);
+            return this;
+        }
+
+        public RegisterPage SetInvoiceCity(string text)
+        {
+            this.Driver.SendKeys(invoiceCity, text);
+            return this;
+        }
+
+        public RegisterPage SetInvoiceAddress(string text)
+        {
+            this.Driver.SendKeys(invoiceAddress, text);
+            return this;
+        }
+
+        public RegisterPage SetInvoiceNip(string text)
+        {
+            this.Driver.SendKeys(invoiceNip, text);
+            return this;
+        }
+
+        public RegisterPage SetInvoiceEmail(string text)
+        {
+            this.Driver.SendKeys(invoiceEmail, text);
+            return this;
+        }
     }
 }
