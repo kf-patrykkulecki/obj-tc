@@ -42,6 +42,8 @@ namespace obj_tc.Page
         {
         }
 
+        public TopbarPage Topbar => new TopbarPage(DriverContext);
+
         public string SuccessExamName => this.Driver.GetElement(examName).Text;
 
         public string SuccessCntactEmail => this.Driver.GetElement(contactEmail).Text;

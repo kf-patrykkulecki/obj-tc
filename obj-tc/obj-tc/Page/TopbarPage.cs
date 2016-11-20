@@ -39,10 +39,10 @@ namespace obj_tc.Page
             return new DashboardPage(this.DriverContext);
         }
 
-        public RegisterPage OpenRegistration()
+        public RegisterListPage OpenRegistration()
         {
             this.Driver.Click(registrationLink);
-            return new RegisterPage(this.DriverContext);
+            return new RegisterListPage(this.DriverContext);
         }
 
         public ProductListPage OpenProducts()

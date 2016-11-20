@@ -17,7 +17,7 @@ namespace obj_tc.Page
         private readonly ElementLocator additionalInofrmationInput = new ElementLocator(Locator.Id, "SessionDto_AdditionalInformation");
 
         private readonly ElementLocator spacePerProductLabel = new ElementLocator(Locator.CssSelector, "#spacePerProduct ~ label");
-        private readonly ElementLocator spacePerSessionLabel = new ElementLocator(Locator.Id, "spacePerSession ~ label");
+        private readonly ElementLocator spacePerSessionLabel = new ElementLocator(Locator.CssSelector, "#spacePerSession ~ label");
         private readonly ElementLocator spacePerSessionInput = new ElementLocator(Locator.Name, "SessionDto.SpaceForSession");
 
         private readonly ElementLocator levelSelect = new ElementLocator(Locator.CssSelector, "div.level");
@@ -105,6 +105,8 @@ namespace obj_tc.Page
 
         public AddSessionPage SetSpacePerSession(string text)
         {
+            this.Driver.Click(spacePerSessionLabel);
+            this.Driver.WaitForAjax();
             this.Driver.SendKeys(spacePerSessionInput, text);
             return this;
         }

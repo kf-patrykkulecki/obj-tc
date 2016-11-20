@@ -95,6 +95,43 @@ namespace obj_tc.Tests
             registerPage.SuccessThankyouMessage.Should().Be("Dziękujemy za zapisanie się na egzamin");
 
             //TODO improve assertions
+            var registerDetailsPage = registerPage.Topbar.OpenRegistration().OpenRegistrationDetails(contactUserName);
+
+            var currentDetails = registerDetailsPage.Details;
+
+            currentDetails[0].Should().Be(sessionDate);
+            currentDetails[1].Should().Be(product.Select(el => el.Key).First().Split('/')[0].Trim());
+            currentDetails[2].Should().Be(product.Select(el => el.Key).First().Split('/')[1].Trim());
+            currentDetails[3].Should().Be("papierowa");
+            currentDetails[4].Should().Be(sessionPostCode);
+            currentDetails[5].Should().Be(sessionCity.ToString());
+            currentDetails[6].Should().Be(sessionAddress);
+            currentDetails[7].Should().Be(certificateNumber);
+            currentDetails[8].Should().Be(certificateDate);
+
+            registerDetailsPage.OpenPersonDetails();
+
+            var currentPersonDetails = registerDetailsPage.PersonDetails;
+
+            currentPersonDetails[0].Should().Be(contactUserName);
+            currentPersonDetails[1].Should().Be(contactUserSurname);
+            currentPersonDetails[2].Should().Be(contactUserEmail);
+            currentPersonDetails[3].Should().Be("-");
+
+            registerDetailsPage.OpenCertDetails();
+
+            var currentCertDetails = registerDetailsPage.CertDetails;
+
+            currentCertDetails[0].Should().Be(contactUserName);
+            currentCertDetails[1].Should().Be(contactUserSurname);
+            currentCertDetails[2].Should().Be(contactUserPostCode);
+            currentCertDetails[3].Should().Be(contactUserCity);
+            currentCertDetails[4].Should().Be(contactUserAddress);
+            currentCertDetails[5].Should().Be("-");
+            currentCertDetails[6].Should().Be("-");
+            currentCertDetails[7].Should().Be("-");
+            currentCertDetails[8].Should().Be("-");
+            currentCertDetails[9].Should().Be("-");
         }
 
         [Fact]
