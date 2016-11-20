@@ -33,5 +33,10 @@ namespace obj_tc.Page
             this.Driver.Click(registerIndividual.Format(text));
             return new RegisterPage(this.DriverContext);
         }
+
+        public string GetRegisterButtonText(string text)
+        {
+            return this.Driver.GetElement(registerIndividual.Format(text)).Text; 
+        }
     }
 }

@@ -171,5 +171,6 @@ namespace obj_tc.Page
             this.Driver.Click(acceptMarketingPolicyRadio);
             return this;
         }
+       
     }
 }
