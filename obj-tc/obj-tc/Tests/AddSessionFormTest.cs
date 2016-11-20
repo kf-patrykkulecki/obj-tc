@@ -206,6 +206,38 @@ namespace obj_tc.Tests
             sessionDetailsPage.Time.Should().Be(testDate.Split(' ')[1]);
         }
 
+        [Theory]
+        [InlineData("-1")]
+        public void CheckSpaceNegativeCondition_Test(string space) {
+            var landingPage = new LandingPage(DriverContext);
+            var dashboardPage =
+                landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn();
+            var addSessionPage = dashboardPage.Topbar.OpenAddSession();
+            string city = Convert.ToString(GetTimeStamp());
+            var testDate = date.AddDays(2).ToString(format);
+            var testSpace = space;
+            var level = new List<string> { "Ekspercki" };
+            var product = new Dictionary<string, int>
+            {
+                {"ISTQB Improving the Testing Process / Angielski", 999}
+            };
+            var expectedProduct = new List<string>
+            {
+                "ISTQB Improving the Testing Process/Angielski"
+            };
+
+            addSessionPage.SetCity(city);
+            addSessionPage.SetDate(testDate);
+
+            addSessionPage.SelectLevel(level)
+              .SelectProduct(product.Select(el => el.Key).ToList());
+            addSessionPage.SetSpacePerSession(testSpace);
+
+            var result = addSessionPage.SaveSessionReturnAddSession();
+
+            result.spaceValidationPresent.Should().BeTrue();
+        }
+
         private int GetTimeStamp()
         {
             return (int)(date.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
