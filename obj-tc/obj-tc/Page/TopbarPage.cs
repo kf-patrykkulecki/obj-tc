@@ -45,10 +45,10 @@ namespace obj_tc.Page
             return new RegisterPage(this.DriverContext);
         }
 
-        public void OpenProducts()
+        public ProductListPage OpenProducts()
         {
-            //TODO if implemented
             this.Driver.Click(productsLink);
+            return new ProductListPage(DriverContext);
         }
     }
 }

@@ -108,6 +108,8 @@
     <Compile Include="Page\ForgotPasswordPage.cs" />
     <Compile Include="Page\LandingPage.cs" />
     <Compile Include="Page\LogInPage.cs" />
+    <Compile Include="Page\ProductDetailsPage.cs" />
+    <Compile Include="Page\ProductListPage.cs" />
     <Compile Include="Page\RegisterPage.cs" />
     <Compile Include="Page\SessionDetailsPage.cs" />
     <Compile Include="Page\TopbarPage.cs" />
@@ -119,6 +121,7 @@
     <Compile Include="Tests\ExamSessionTest.cs" />
     <Compile Include="Tests\LogInTest.cs" />
     <Compile Include="Tests\PasswordResetTest.cs" />
+    <Compile Include="Tests\ProductDetailsTest.cs" />
     <Compile Include="Tests\RegistrationTest.cs" />
   </ItemGroup>
   <ItemGroup>
