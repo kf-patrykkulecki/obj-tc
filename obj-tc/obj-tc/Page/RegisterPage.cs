@@ -56,7 +56,10 @@ namespace obj_tc.Page
         private ElementLocator groupUserEmail = new ElementLocator(Locator.CssSelector, "[name = 'email']");
         private ElementLocator groupUserPhone = new ElementLocator(Locator.CssSelector, "[name = 'phone']");
         private ElementLocator groupUserExam = new ElementLocator(Locator.XPath, "//span[contains(text(), '{0}')]");
-        
+        private ElementLocator groupUserExamLanguage = new ElementLocator(Locator.XPath, "//label[contains(text(), '{0}')]");
+        private ElementLocator groupUserExamForm = new ElementLocator(Locator.XPath, "//label[contains(text(), '{0}')]");
+        private ElementLocator addGroupUserToList = new ElementLocator(Locator.CssSelector, ".btn-registrationAddAttendee");
+
         public RegisterPage(DriverContext driverContext) : base(driverContext)
         {
         }
@@ -68,6 +71,12 @@ namespace obj_tc.Page
         public string SuccessCntactEmail => this.Driver.GetElement(contactEmail).Text;
 
         public string SuccessThankyouMessage => this.Driver.GetElement(thankyouMessage).Text;
+
+        public string FreePlaceForGroupExam(string text)
+        {
+            this.Driver.WaitForAjax();
+            return this.Driver.GetElement(groupUserExam.Format(text)).Text.Split('-')[1].Trim().Split(' ')[0];
+        }
 
 
         public RegisterPage GoForward()
@@ -259,6 +268,54 @@ namespace obj_tc.Page
         public RegisterPage SetLetterAddress(string text)
         {
             this.Driver.SendKeys(letterAddress, text);
+            return this;
+        }
+
+        public RegisterPage SetGroupUserName(string text)
+        {
+            this.Driver.SendKeys(groupUserName, text);
+            return this;
+        }
+
+        public RegisterPage SetgroupUserSurname(string text)
+        {
+            this.Driver.SendKeys(groupUserSurname, text);
+            return this;
+        }
+
+        public RegisterPage SetgroupUserEmail(string text)
+        {
+            this.Driver.SendKeys(groupUserEmail, text);
+            return this;
+        }
+
+        public RegisterPage SetGroupUserPhone(string text)
+        {
+            this.Driver.SendKeys(groupUserPhone, text);
+            return this;
+        }
+
+        public RegisterPage SelectExamForGroupUser(string text)
+        {
+            this.Driver.Click(groupUserExam.Format(text));
+            return this;
+        }
+
+        public RegisterPage SelectGroupUserExamLanguage(string text)
+        {
+            this.Driver.Click(groupUserExamLanguage.Format(text));
+            return this;
+        }
+
+        public RegisterPage SelectGroupUserExamForm(string text)
+        {
+            this.Driver.Click(groupUserExamForm.Format(text));
+            return this;
+        }
+
+        public RegisterPage AddGroupUserToList()
+        {
+            this.Driver.Click(addGroupUserToList);
             return this;
         }
     }

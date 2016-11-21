@@ -504,7 +504,61 @@ namespace obj_tc.Tests
             // Register to session
             var registerPage = sessionDetailsPage.Topbar.LogOut().RegisterGroupToSession(sessionCity.ToString());
 
-            //TODO FINISH
+            var userName1 = StringExtensions.GenerateMaxAlphanumericString(50);
+            var userSurname1 = StringExtensions.GenerateMaxAlphanumericString(50);
+            var userEmail1 = "user1@test.pl";
+            var userPhone1 = "123123123";
+
+            var userName2 = StringExtensions.GenerateMaxAlphanumericString(50);
+            var userSurname2 = StringExtensions.GenerateMaxAlphanumericString(50);
+            var userEmail2 = "user2@test.pl";
+
+            var contactUserName = StringExtensions.GenerateMaxAlphanumericString(50);
+            var contactUserSurname = StringExtensions.GenerateMaxAlphanumericString(50);
+            var contactUserEmail = "test3@test.pl";
+            var contactUserPostCode = "54-420";
+            var contactUserCity = StringExtensions.GenerateMaxAlphanumericString(50);
+            var contactUserAddress = StringExtensions.GenerateMaxAlphanumericString(50);
+            var contactUserComment = StringExtensions.GenerateMaxAlphanumericString(500);
+
+            registerPage.FreePlaceForGroupExam(product.Select(el => el.Key).First().Split('/')[0].Trim()).Should().Be("2");
+
+            registerPage.SetGroupUserName(userName1)
+                .SetgroupUserSurname(userSurname1)
+                .SetgroupUserEmail(userEmail1)
+                .SetGroupUserPhone(userPhone1)
+                .SelectExamForGroupUser(product.Select(el => el.Key).First().Split('/')[0])
+                .SelectGroupUserExamLanguage("Polski")
+                .SelectGroupUserExamForm("papierowa")
+                .AddGroupUserToList();
+
+            registerPage.FreePlaceForGroupExam(product.Select(el => el.Key).First().Split('/')[0]).Should().Be("1");
+
+            registerPage.SetGroupUserName(userName2)
+                .SetgroupUserSurname(userSurname2)
+                .SetgroupUserEmail(userEmail2)
+                .SelectExamForGroupUser(product.Select(el => el.Key).First().Split('/')[0])
+                .SelectGroupUserExamLanguage("Angielski")
+                .SelectGroupUserExamForm("elektroniczna")
+                .AddGroupUserToList()
+                .GoForward()
+                .SetName(contactUserName)
+                .SetSurname(contactUserSurname)
+                .SetEmail(contactUserEmail)
+                .GoForward()
+                .SetCertificateName(contactUserName)
+                .SetCertificateSurname(contactUserSurname)
+                .SetCertificatePostCode(contactUserPostCode)
+                .SetCertificateCity(contactUserCity)
+                .SetCertificateAddres(contactUserAddress)
+                .SetCertificateComment(contactUserComment)
+                .SelectNoInvoice()
+                .SelectAcceptPrivacyPolicy()
+                .GoForward();
+
+            registerPage.SuccessExamName.Should().Be(product.Select(el => el.Key).First().Split('/')[0].Trim());
+            registerPage.SuccessCntactEmail.Should().Be(contactUserEmail);
+            registerPage.SuccessThankyouMessage.Should().Be("Dziękujemy za zapisanie się na egzamin");
         }
 
         [Fact]
