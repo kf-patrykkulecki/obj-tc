@@ -8,7 +8,7 @@ namespace obj_tc.Page
 {
     public class TopbarPage : ProjectPageBase
     {
-        private readonly ElementLocator userName = new ElementLocator(Locator.CssSelector, ".userName");
+        private readonly ElementLocator userName = new ElementLocator(Locator.CssSelector, "#dropdownMenu-user");
         private readonly ElementLocator addSessionLink = new ElementLocator(Locator.Id, "navItem-Session");
         private readonly ElementLocator dashboardLink = new ElementLocator(Locator.Id, "navItem-Dashboard");
         private readonly ElementLocator registrationLink = new ElementLocator(Locator.Id, "navItem-Registration");
