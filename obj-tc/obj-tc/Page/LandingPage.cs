@@ -11,6 +11,7 @@ namespace obj_tc.Page
         private readonly ElementLocator logInLink = new ElementLocator(Locator.Id, "loginLink");
         private readonly ElementLocator registerIndividual = new ElementLocator(Locator.XPath, "//h5[contains(., '{0}')]/ancestor::div[contains(@class, 'Agenda-dateRow')]/following-sibling::div[contains(@class, 'Agenda-dateContentContainer')]//td[contains(@class, 'btn')]");
         private readonly ElementLocator registerGroup = new ElementLocator(Locator.XPath, "//h5[contains(., '{0}')]/ancestor::div[contains(@class, 'Agenda-dateRow')]/following-sibling::div[contains(@class, 'Agenda-dateContentContainer')]//div[contains(@class, 'Agenda-groupBtnContainer')]");
+        private readonly ElementLocator proposeExamPage = new ElementLocator(Locator.CssSelector, "span.btn.js-closed.LandingPage-registerBtn");
 
         public LandingPage(DriverContext driverContext) : base(driverContext)
         {
@@ -21,6 +22,13 @@ namespace obj_tc.Page
             this.Driver.NavigateTo(
                 new System.Uri(BaseConfiguration.Protocol + BaseConfiguration.Host + BaseConfiguration.Url));
             return this;
+        }
+
+        public ClosedSessionPage ProposeExamPage()
+        {
+            this.Driver.WaitForElementToBeDisplayed(proposeExamPage);
+            this.Driver.Click(proposeExamPage);
+            return new ClosedSessionPage(this.DriverContext);
         }
 
         public LogInPage OpenLogInPage()

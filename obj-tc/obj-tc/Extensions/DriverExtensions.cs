@@ -42,8 +42,7 @@ namespace obj_tc.Extensions
                 Message = "Element not clickable"
             };
             wait.Until(ExpectedConditions.ElementToBeClickable(locator.ToBy()));
-
-            //driver.ScrollIntoMiddle(locator);
+               //driver.ScrollIntoMiddle(locator);
             driver.WaitForElementToBeDisplayed(locator, BaseConfiguration.LongTimeout);
             driver.GetElement(locator).Click();
         }

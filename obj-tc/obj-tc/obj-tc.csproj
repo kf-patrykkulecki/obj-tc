@@ -103,6 +103,7 @@
   <ItemGroup>
     <Compile Include="Extensions\DriverExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Page\ClosedSessionPage.cs" />
     <Compile Include="Page\AddSessionPage.cs" />
     <Compile Include="Page\DashboardPage.cs" />
     <Compile Include="Page\ForgotPasswordConfirmationPage.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="Tests\LogInTest.cs" />
     <Compile Include="Tests\PasswordResetTest.cs" />
     <Compile Include="Tests\ProductDetailsTest.cs" />
+    <Compile Include="Tests\ClosedSessionTest.cs" />
     <Compile Include="Tests\RegistrationTest.cs" />
   </ItemGroup>
   <ItemGroup>
