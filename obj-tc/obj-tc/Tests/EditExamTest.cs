@@ -236,6 +236,65 @@ namespace obj_tc.Tests
             addSessionPage.spacePerProductValidationText.Last().Should().Be("Wymagana jest liczba całkowita z zakresu 0-999");
         }
 
+        [Fact]
+        public void EditExamSessionInOrderToChangesPerExamTypeToPerSession_Test()
+        {
+            var landingPage = new LandingPage(DriverContext);
+
+            // Data
+            var sessionDate = date.AddDays(1).ToString(format);
+            var sessionCity = GetTimeStamp();
+            var level = new List<string>
+            {
+                "Podstawowy",
+                "Ekspercki"
+            };
+            var product = new Dictionary<string, int>
+            {
+                {"ISTQB Foundation Level / Polski, Angielski", 999},
+                {"ISTQB Improving the Testing Process / Angielski", 999 }
+            };
+            var expectedProduct = new List<string>
+            {
+                "ISTQB Foundation Level/Polski, Angielski",
+                "ISTQB Improving the Testing Process/Angielski"
+            };
+
+            var addSessionPage =
+                landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn().Topbar.OpenAddSession();
+
+            // Create session
+            addSessionPage.SetDate(sessionDate)
+                .SetCity(sessionCity.ToString())
+                .SelectSpacePerProduct()
+                .SelectLevel(level)
+                .SelectProduct(product.Select(el => el.Key).ToList());
+
+            foreach (var prod in product)
+            {
+                addSessionPage.SetProductSpace(prod.Key, prod.Value);
+            }
+
+            var sessionDetailsPage = addSessionPage.SaveSession();
+
+            // Check session details
+            sessionDetailsPage.Space.Should().Be(product.Select(el => el.Value).Sum());
+            sessionDetailsPage.SwitchToExams();
+            sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
+            sessionDetailsPage.ExamsSpaceBasic.Should().Be(999);
+            sessionDetailsPage.ExamsSpaceExpert.Should().Be(999);
+
+            // Check if session present on dashboard
+            sessionDetailsPage.EditSession();
+
+            addSessionPage.SelectSpacePerSession().SetSpacePerSession(100.ToString()).SaveSession();
+
+            sessionDetailsPage.Space.Should().Be(100);
+            sessionDetailsPage.SwitchToExams();
+            sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
+            sessionDetailsPage.ExamsSpaceBasic.Should().Be(100);
+        }
+
         private int GetTimeStamp()
         {
             return (int)(date.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
