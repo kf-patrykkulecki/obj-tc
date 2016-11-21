@@ -41,7 +41,7 @@ namespace obj_tc.Page
         private readonly ElementLocator dateValidationMessage = new ElementLocator(Locator.CssSelector, "span[data-valmsg-for='SessionDto.Date']");
         private readonly ElementLocator productValidationMessage = new ElementLocator(Locator.CssSelector, "span[data-valmsg-for='SessionDto.Products']");
         private readonly ElementLocator spaceValidationMessage = new ElementLocator(Locator.CssSelector, "span[data-valmsg-for='SessionDto.Space']");
-
+        private readonly ElementLocator spacePerSessionValidationMessage = new ElementLocator(Locator.CssSelector, "[for = 'SessionDto.SpaceForSession']");
 
         public AddSessionPage(DriverContext driverContext) : base(driverContext)
         {
@@ -52,11 +52,14 @@ namespace obj_tc.Page
         public string cityValidationText => this.Driver.GetElement(cityValidationMessage).Text;
         public string dateValidationText => this.Driver.GetElement(dateValidationMessage).Text;
         public string productValidationText => this.Driver.GetElement(productValidationMessage).Text;
+        public string spacePerSessionValidationText => this.Driver.GetElement(spacePerSessionValidationMessage).Text;
 
         public bool cityValidationPresent => this.Driver.IsElementPresent(cityValidationMessage, 3);
         public bool dateValidationPresent => this.Driver.IsElementPresent(dateValidationMessage, 3);
         public bool productValidationPresent => this.Driver.IsElementPresent(productValidationMessage, 3);
         public bool spaceValidationPresent => this.Driver.IsElementPresent(spaceValidationMessage, 3);
+        public bool spacePerSessionValidationPresent => this.Driver.IsElementPresent(spacePerSessionValidationMessage, 3);
+
 
         public bool spacePerSessionInputPresent => this.Driver.IsElementPresent(spacePerSessionInput, 3);
 
