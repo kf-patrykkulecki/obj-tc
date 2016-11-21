@@ -238,6 +238,17 @@ namespace obj_tc.Tests
             result.spaceValidationPresent.Should().BeTrue();
         }
 
+        [Fact]
+        public void CheckSpacePerSessionVisibleByDefault_Test()
+        {
+            var landingPage = new LandingPage(DriverContext);
+            var dashboardPage =
+                landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn();
+            var addSessionPage = dashboardPage.Topbar.OpenAddSession();
+
+            addSessionPage.spacePerSessionInputPresent.Should().BeTrue();
+        }
+
         private int GetTimeStamp()
         {
             return (int)(date.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;

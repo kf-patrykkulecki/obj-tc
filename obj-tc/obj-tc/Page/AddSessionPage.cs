@@ -58,6 +58,8 @@ namespace obj_tc.Page
         public bool productValidationPresent => this.Driver.IsElementPresent(productValidationMessage, 3);
         public bool spaceValidationPresent => this.Driver.IsElementPresent(spaceValidationMessage, 3);
 
+        public bool spacePerSessionInputPresent => this.Driver.IsElementPresent(spacePerSessionInput, 3);
+
         public AddSessionPage SetDate(string text)
         {
             this.Driver.Click(dateInput);
