@@ -132,6 +132,19 @@ namespace obj_tc.Page
             return this;
         }
 
+        public AddSessionPage UnSelectLevel(List<string> text)
+        {
+            this.Driver.Click(levelSelect);
+            foreach (var el in text)
+            {
+                this.Driver.WaitForElementToBeDisplayed(levelSelectValueSelected.Format(el));
+                this.Driver.Click(levelSelectValue.Format(el));
+                this.Driver.WaitUntilElementIsNoLongerFound(levelSelectValueSelected.Format(el), BaseConfiguration.MediumTimeout);
+            }
+            this.Driver.Click(levelSelect);
+            return this;
+        }
+
         public AddSessionPage SelectProduct(List<string> text)
         {
             this.Driver.Click(productSelect);
@@ -139,6 +152,19 @@ namespace obj_tc.Page
             {
                 this.Driver.Click(productSelectValue.Format(el));
                 this.Driver.WaitForElementToBeDisplayed(productSelectValueSelected.Format(el));
+            }
+            this.Driver.Click(productSelect);
+            return this;
+        }
+
+        public AddSessionPage UnSelectProduct(List<string> text)
+        {
+            this.Driver.Click(productSelect);
+            foreach (var el in text)
+            {
+                this.Driver.WaitForElementToBeDisplayed(productSelectValueSelected.Format(el));
+                this.Driver.Click(productSelectValue.Format(el));
+                this.Driver.WaitUntilElementIsNoLongerFound(productSelectValueSelected.Format(el), BaseConfiguration.MediumTimeout);
             }
             this.Driver.Click(productSelect);
             return this;
