@@ -169,7 +169,7 @@ namespace obj_tc.Tests
             addSessionPage.SetDate(examDate);
             addSessionPage.SetDate(testDate);
 
-            var result = addSessionPage.SaveSessionReturnAddSession();
+            var result = addSessionPage.SaveSessionReturnAddSessionWithAlert();
 
             result.dateValidationPresent.Should().BeTrue();
             result.dateValidationText.Should().Be("Pole Date jest wymagane");
@@ -201,7 +201,7 @@ namespace obj_tc.Tests
             addSessionPage.SelectLevel(level)
               .SelectProduct(product.Select(el => el.Key).ToList());
 
-            var sessionDetailsPage = addSessionPage.SaveSession();
+            var sessionDetailsPage = addSessionPage.SaveSessionAndAcceptAlert();
             sessionDetailsPage.Date.Should().Be(testDate.Split(' ')[0]);
             sessionDetailsPage.Time.Should().Be(testDate.Split(' ')[1]);
         }

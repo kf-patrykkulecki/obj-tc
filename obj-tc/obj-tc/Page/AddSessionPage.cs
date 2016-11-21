@@ -164,8 +164,26 @@ namespace obj_tc.Page
             return new SessionDetailsPage(DriverContext);
         }
 
+        public SessionDetailsPage SaveSessionAndAcceptAlert()
+        {
+            this.Driver.Click(saveSessionButton);
+            this.Driver.JavaScriptAlert().ConfirmJavaScriptAlert();
+            return new SessionDetailsPage(DriverContext);
+        }
+
         public AddSessionPage SaveSessionReturnAddSession()
         {
+            
+            this.Driver.Click(saveSessionButton);
+            return this;
+        }
+
+        public AddSessionPage SaveSessionReturnAddSessionWithAlert()
+        {
+            
+                this.Driver.JavaScriptAlert().ConfirmJavaScriptAlert();
+          
+
             this.Driver.Click(saveSessionButton);
             return this;
         }

@@ -96,7 +96,7 @@ namespace obj_tc.Tests
                 .SelectLevel(level)
                 .SelectProduct(product);
 
-            var sessionDetailsPage = addSessionPage.SaveSession();
+            var sessionDetailsPage = addSessionPage.SaveSessionAndAcceptAlert();
 
             // Check session details
             sessionDetailsPage.Date.Should().Be(sessionDate.Split(' ')[0]);
