@@ -12,7 +12,7 @@ namespace obj_tc.Page
     {
         private readonly ElementLocator sessionStatus = new ElementLocator(Locator.CssSelector, ".js-session-status");
         //private readonly ElementLocator sessionActivateButton = new ElementLocator(Locator.CssSelector, ".Sidebar-itemValue input:nth-of-type(1)");
-        private readonly ElementLocator sessionActivateButton = new ElementLocator(Locator.CssSelector, "input[data-content='Aktywowanie sesji']");
+        private readonly ElementLocator sessionActivateButton = new ElementLocator(Locator.XPath, "//div[label[@data-content='Aktywowanie sesji']]");
         // Links
         private readonly ElementLocator examsLink = new ElementLocator(Locator.Id, "sidebarItem-SessionExams");
         // Details
