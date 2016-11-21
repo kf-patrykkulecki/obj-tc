@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using obj_tc.Extensions;
 using obj_tc.Page;
 using Objectivity.Test.Automation.Common;
 using Objectivity.Test.Automation.Tests.Xunit;
@@ -55,12 +56,21 @@ namespace obj_tc.Tests
             sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
             sessionDetailsPage.ExamsSpaceBasic.Should().Be(999);
 
-            // Check if session present on dashboard
             sessionDetailsPage.EditSession();
 
             addSessionPage.SetSpacePerSession(200.ToString()).SaveSession();
 
+            // Check session details
+            sessionDetailsPage.Date.Should().Be(sessionDate.Split(' ')[0]);
+            sessionDetailsPage.Time.Should().Be(sessionDate.Split(' ')[1]);
             sessionDetailsPage.Space.Should().Be(200);
+            sessionDetailsPage.Examiner.Should().BeEmpty();
+            sessionDetailsPage.PostCode.Should().Be("-");
+            sessionDetailsPage.City.Should().Be(sessionCity.ToString());
+            sessionDetailsPage.Address.Should().Be("-");
+            sessionDetailsPage.AdditionalInformation.Should().Be("-");
+            sessionDetailsPage.Status.Should().Be("Nowy");
+
             sessionDetailsPage.SwitchToExams();
             sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
             sessionDetailsPage.ExamsSpaceBasic.Should().Be(200);
@@ -170,7 +180,17 @@ namespace obj_tc.Tests
 
             addSessionPage.SaveSession();
 
+            // Check session details
+            sessionDetailsPage.Date.Should().Be(sessionDate.Split(' ')[0]);
+            sessionDetailsPage.Time.Should().Be(sessionDate.Split(' ')[1]);
             sessionDetailsPage.Space.Should().Be(product.Select(el => el.Value).Sum());
+            sessionDetailsPage.Examiner.Should().BeEmpty();
+            sessionDetailsPage.PostCode.Should().Be("-");
+            sessionDetailsPage.City.Should().Be(sessionCity.ToString());
+            sessionDetailsPage.Address.Should().Be("-");
+            sessionDetailsPage.AdditionalInformation.Should().Be("-");
+            sessionDetailsPage.Status.Should().Be("Nowy");
+
             sessionDetailsPage.SwitchToExams();
             sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
             sessionDetailsPage.ExamsSpaceBasic.Should().Be(999);
@@ -284,10 +304,20 @@ namespace obj_tc.Tests
             sessionDetailsPage.ExamsSpaceBasic.Should().Be(999);
             sessionDetailsPage.ExamsSpaceExpert.Should().Be(999);
 
-            // Check if session present on dashboard
             sessionDetailsPage.EditSession();
 
             addSessionPage.SelectSpacePerSession().SetSpacePerSession(100.ToString()).SaveSession();
+
+            // Check session details
+            sessionDetailsPage.Date.Should().Be(sessionDate.Split(' ')[0]);
+            sessionDetailsPage.Time.Should().Be(sessionDate.Split(' ')[1]);
+            sessionDetailsPage.Space.Should().Be(100);
+            sessionDetailsPage.Examiner.Should().BeEmpty();
+            sessionDetailsPage.PostCode.Should().Be("-");
+            sessionDetailsPage.City.Should().Be(sessionCity.ToString());
+            sessionDetailsPage.Address.Should().Be("-");
+            sessionDetailsPage.AdditionalInformation.Should().Be("-");
+            sessionDetailsPage.Status.Should().Be("Nowy");
 
             sessionDetailsPage.Space.Should().Be(100);
             sessionDetailsPage.SwitchToExams();
@@ -351,6 +381,168 @@ namespace obj_tc.Tests
             addSessionPage.SelectSpacePerSession().SetSpacePerSession(param.ToString()).SaveSessionReturnAddSession();
             addSessionPage.spacePerSessionValidationPresent.Should().BeTrue();
             addSessionPage.spacePerSessionValidationText.Should().Be("Wymagana jest liczba całkowita z zakresu 0-999");
+        }
+
+        [Fact]
+        public void EditExamSessionInOrderAndChangeLocationOfTheExam_Test()
+        {
+            var landingPage = new LandingPage(DriverContext);
+
+            // Data
+            var sessionDate = date.AddDays(2).ToString(format);
+            var sessionCity = StringExtensions.GenerateMaxAlphanumericString(50);
+            var sessionPostCode = "54-429";
+            var sessionAddress = StringExtensions.GenerateMaxAlphanumericString(50);
+            var sessionAdditionalInformation = StringExtensions.GenerateMaxAlphanumericString(500);
+            var examiner = "Objectivity 1 Test";
+            var level = new List<string> { "Ekspercki" };
+            var product = new Dictionary<string, int>
+            {
+                {"ISTQB Improving the Testing Process / Angielski", 999}
+            };
+            var expectedProduct = new List<string>
+            {
+                "ISTQB Improving the Testing Process/Angielski"
+            };
+
+            var dashboardPage = landingPage.OpenLandingPage()
+                .OpenLogInPage()
+                .SetEmail(email)
+                .SetPassword(password)
+                .LogIn();
+
+            var addSessionPage = dashboardPage.Topbar.OpenAddSession();
+
+            // Create session
+            addSessionPage.SetDate(sessionDate)
+                .SetPostCode(sessionPostCode)
+                .SetCity(sessionCity)
+                .SetAddress(sessionAddress)
+                .SetAdditionalInformation(sessionAdditionalInformation)
+                .SelectSpacePerProduct()
+                .SelectLevel(level)
+                .SelectProduct(product.Select(el => el.Key).ToList())
+                .SetProductSpace(product.Keys.First(), product.Values.First())
+                .SelectExaminer(examiner);
+
+            var sessionDetailsPage = addSessionPage.SaveSession();
+
+            // Check session details
+            sessionDetailsPage.Date.Should().Be(sessionDate.Split(' ')[0]);
+            sessionDetailsPage.Time.Should().Be(sessionDate.Split(' ')[1]);
+            sessionDetailsPage.Space.Should().Be(product.Select(el => el.Value).Sum());
+            sessionDetailsPage.Examiner.Should().Be(examiner);
+            sessionDetailsPage.PostCode.Should().Be(sessionPostCode);
+            sessionDetailsPage.City.Should().Be(sessionCity);
+            sessionDetailsPage.Address.Should().Be(sessionAddress);
+            sessionDetailsPage.AdditionalInformation.Should().Be(sessionAdditionalInformation);
+            sessionDetailsPage.Status.Should().Be("Nowy");
+
+            sessionDetailsPage.SwitchToExams();
+            sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
+            sessionDetailsPage.ExamsSpaceExpert.Should().Be(product.Select(el => el.Value).Take(1).Sum());
+
+            sessionDetailsPage.EditSession();
+
+            var updatedCity = StringExtensions.GenerateMaxAlphanumericString(50);
+            var updatedAddress = StringExtensions.GenerateMaxAlphanumericString(50);
+            var updatedPostCode = "00-010";
+
+            addSessionPage.SetCity(updatedCity)
+                .SetAddress(updatedAddress)
+                .SetPostCode(updatedPostCode)
+                .SaveSession();
+
+            // Check session details
+            sessionDetailsPage.Date.Should().Be(sessionDate.Split(' ')[0]);
+            sessionDetailsPage.Time.Should().Be(sessionDate.Split(' ')[1]);
+            sessionDetailsPage.Space.Should().Be(product.Select(el => el.Value).Sum());
+            sessionDetailsPage.Examiner.Should().Be(examiner);
+            sessionDetailsPage.PostCode.Should().Be(updatedPostCode);
+            sessionDetailsPage.City.Should().Be(updatedCity);
+            sessionDetailsPage.Address.Should().Be(updatedAddress);
+            sessionDetailsPage.AdditionalInformation.Should().Be(sessionAdditionalInformation);
+            sessionDetailsPage.Status.Should().Be("Nowy");
+
+            // Check if session present on dashboard
+            sessionDetailsPage.Topbar.OpenDashboard().IsSessionDisplayed(updatedCity.ToString()).Should().BeTrue();
+        }
+
+        [Fact]
+        public void EditExamSessionInOrderAndChangeExaminer_Test()
+        {
+            var landingPage = new LandingPage(DriverContext);
+
+            // Data
+            var sessionDate = date.AddDays(2).ToString(format);
+            var sessionCity = StringExtensions.GenerateMaxAlphanumericString(50);
+            var sessionPostCode = "54-429";
+            var sessionAddress = StringExtensions.GenerateMaxAlphanumericString(50);
+            var sessionAdditionalInformation = StringExtensions.GenerateMaxAlphanumericString(500);
+            var examiner = "Objectivity 1 Test";
+            var level = new List<string> { "Ekspercki" };
+            var product = new Dictionary<string, int>
+            {
+                {"ISTQB Improving the Testing Process / Angielski", 999}
+            };
+            var expectedProduct = new List<string>
+            {
+                "ISTQB Improving the Testing Process/Angielski"
+            };
+
+            var dashboardPage = landingPage.OpenLandingPage()
+                .OpenLogInPage()
+                .SetEmail(email)
+                .SetPassword(password)
+                .LogIn();
+
+            var addSessionPage = dashboardPage.Topbar.OpenAddSession();
+
+            // Create session
+            addSessionPage.SetDate(sessionDate)
+                .SetPostCode(sessionPostCode)
+                .SetCity(sessionCity)
+                .SetAddress(sessionAddress)
+                .SetAdditionalInformation(sessionAdditionalInformation)
+                .SelectSpacePerProduct()
+                .SelectLevel(level)
+                .SelectProduct(product.Select(el => el.Key).ToList())
+                .SetProductSpace(product.Keys.First(), product.Values.First())
+                .SelectExaminer(examiner);
+
+            var sessionDetailsPage = addSessionPage.SaveSession();
+
+            // Check session details
+            sessionDetailsPage.Date.Should().Be(sessionDate.Split(' ')[0]);
+            sessionDetailsPage.Time.Should().Be(sessionDate.Split(' ')[1]);
+            sessionDetailsPage.Space.Should().Be(product.Select(el => el.Value).Sum());
+            sessionDetailsPage.Examiner.Should().Be(examiner);
+            sessionDetailsPage.PostCode.Should().Be(sessionPostCode);
+            sessionDetailsPage.City.Should().Be(sessionCity);
+            sessionDetailsPage.Address.Should().Be(sessionAddress);
+            sessionDetailsPage.AdditionalInformation.Should().Be(sessionAdditionalInformation);
+            sessionDetailsPage.Status.Should().Be("Nowy");
+
+            sessionDetailsPage.SwitchToExams();
+            sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
+            sessionDetailsPage.ExamsSpaceExpert.Should().Be(product.Select(el => el.Value).Take(1).Sum());
+
+            sessionDetailsPage.EditSession();
+
+            var updatedExaminer = "Objectivity 2 Test";
+
+            addSessionPage.SelectExaminer(updatedExaminer).SaveSession();
+
+            // Check session details
+            sessionDetailsPage.Date.Should().Be(sessionDate.Split(' ')[0]);
+            sessionDetailsPage.Time.Should().Be(sessionDate.Split(' ')[1]);
+            sessionDetailsPage.Space.Should().Be(product.Select(el => el.Value).Sum());
+            sessionDetailsPage.Examiner.Should().Be(updatedExaminer);
+            sessionDetailsPage.PostCode.Should().Be(sessionPostCode);
+            sessionDetailsPage.City.Should().Be(sessionCity);
+            sessionDetailsPage.Address.Should().Be(sessionAddress);
+            sessionDetailsPage.AdditionalInformation.Should().Be(sessionAdditionalInformation);
+            sessionDetailsPage.Status.Should().Be("Nowy");
         }
 
         private int GetTimeStamp()
