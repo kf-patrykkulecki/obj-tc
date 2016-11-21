@@ -45,6 +45,8 @@ namespace obj_tc.Page
         private readonly ElementLocator spacePerSessionValidationMessage = new ElementLocator(Locator.CssSelector, "[for = 'SessionDto.SpaceForSession']");
         private readonly ElementLocator spacePerProductValidationMessage = new ElementLocator(Locator.CssSelector, "[for *= 'CapacityForProductSession']");
 
+        private readonly ElementLocator removeProduct = new ElementLocator(Locator.XPath, "//div[text() = '{0}']/ancestor::div[contains(@class, 'js-product-row')]//div[contains(@class, 'pull-right')]");
+
         public AddSessionPage(DriverContext driverContext) : base(driverContext)
         {
         }
@@ -196,5 +198,10 @@ namespace obj_tc.Page
             return this;
         }
 
+        public AddSessionPage RemoveProduct(string text)
+        {
+            this.Driver.Click(removeProduct.Format(text));
+            return this;
+        }
     }
 }

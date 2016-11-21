@@ -702,9 +702,61 @@ namespace obj_tc.Tests
             sessionDetailsPage.ExamsSpaceBasic.Should().Be(updateProduct.Select(el => el.Value).Sum());
         }
 
+        [Fact]
         public void EditExamSessionInOrderToDeleteProduct_Test()
         {
+            var landingPage = new LandingPage(DriverContext);
 
+            // Data
+            var sessionDate = date.AddDays(1).ToString(format);
+            var sessionCity = GetTimeStamp();
+            var level = new List<string>
+            {
+                "Podstawowy",
+                "Ekspercki"
+            };
+            var product = new Dictionary<string, int>
+            {
+                {"ISTQB Foundation Level / Polski, Angielski", 999},
+                {"ISTQB Improving the Testing Process / Angielski", 999 }
+            };
+            var expectedProduct = new List<string>
+            {
+                "ISTQB Foundation Level/Polski, Angielski",
+                "ISTQB Improving the Testing Process/Angielski"
+            };
+
+            var addSessionPage =
+                landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn().Topbar.OpenAddSession();
+
+            // Create session
+            addSessionPage.SetDate(sessionDate)
+                .SetCity(sessionCity.ToString())
+                .SetSpacePerSession(999.ToString())
+                .SelectLevel(level)
+                .SelectProduct(product.Select(el => el.Key).ToList());
+
+            var sessionDetailsPage = addSessionPage.SaveSession();
+            // Check if session present on dashboard
+            sessionDetailsPage.EditSession();
+
+            addSessionPage.RemoveProduct(product.First().Key).SaveSession();
+
+            // Check session details
+            sessionDetailsPage.Date.Should().Be(sessionDate.Split(' ')[0]);
+            sessionDetailsPage.Time.Should().Be(sessionDate.Split(' ')[1]);
+            sessionDetailsPage.Space.Should().Be(product.Last().Value);
+            sessionDetailsPage.Examiner.Should().BeEmpty();
+            sessionDetailsPage.PostCode.Should().Be("-");
+            sessionDetailsPage.City.Should().Be(sessionCity.ToString());
+            sessionDetailsPage.Address.Should().Be("-");
+            sessionDetailsPage.AdditionalInformation.Should().Be("-");
+            sessionDetailsPage.Status.Should().Be("Nowy");
+
+            sessionDetailsPage.SwitchToExams();
+            sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
+            sessionDetailsPage.ExamsSpaceBasic.Should().Be(999);
+            sessionDetailsPage.ExamsSpaceExpert.Should().Be(999);
         }
 
         private int GetTimeStamp()
