@@ -564,7 +564,102 @@ namespace obj_tc.Tests
         [Fact]
         public void RegisterGroupOfUsersToDifferentExams_Test()
         {
-            //TODO
+            var landingPage = new LandingPage(DriverContext);
+
+            // Data
+            var sessionDate = date.AddDays(8).ToString(format);
+            var sessionCity = GetTimeStamp();
+            var level = new List<string> { "Podstawowy", "Inny" };
+            var product = new Dictionary<string, int>
+            {
+                {"ISTQB Foundation Level / Polski, Angielski", 1},
+                {"ISTQB Agile Tester Extension / Polski, Angielski", 1}
+            };
+
+            var dashboardPage =
+                landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn();
+
+            var addSessionPage = dashboardPage.Topbar.OpenAddSession();
+
+            // Create session
+            addSessionPage.SetDate(sessionDate)
+                .SetCity(sessionCity.ToString())
+                .SelectSpacePerProduct()
+                .SelectLevel(level)
+                .SelectProduct(product.Select(el => el.Key).ToList());
+
+            foreach (var prod in product)
+            {
+                addSessionPage.SetProductSpace(prod.Key, prod.Value);
+            }
+
+            // Activate session
+            var sessionDetailsPage = addSessionPage.SaveSession().ActivateSession();
+            sessionDetailsPage.Status.Should().Be("Otwarta");
+
+            // Register to session
+            var registerPage = sessionDetailsPage.Topbar.LogOut().RegisterGroupToSession(sessionCity.ToString());
+
+            var userName1 = StringExtensions.GenerateMaxAlphanumericString(50);
+            var userSurname1 = StringExtensions.GenerateMaxAlphanumericString(50);
+            var userEmail1 = "user1@test.pl";
+            var userPhone1 = "123123123";
+
+            var userName2 = StringExtensions.GenerateMaxAlphanumericString(50);
+            var userSurname2 = StringExtensions.GenerateMaxAlphanumericString(50);
+            var userEmail2 = "user2@test.pl";
+
+            var contactUserName = StringExtensions.GenerateMaxAlphanumericString(50);
+            var contactUserSurname = StringExtensions.GenerateMaxAlphanumericString(50);
+            var contactUserEmail = "test3@test.pl";
+            var contactUserPostCode = "54-420";
+            var contactUserCity = StringExtensions.GenerateMaxAlphanumericString(50);
+            var contactUserAddress = StringExtensions.GenerateMaxAlphanumericString(50);
+            var contactUserComment = StringExtensions.GenerateMaxAlphanumericString(500);
+
+            registerPage.FreePlaceForGroupExam(product.Select(el => el.Key).First().Split('/')[0].Trim()).Should().Be("1");
+            registerPage.FreePlaceForGroupExam(product.Select(el => el.Key).Last().Split('/')[0].Trim()).Should().Be("1");
+
+            registerPage.SetGroupUserName(userName1)
+                .SetgroupUserSurname(userSurname1)
+                .SetgroupUserEmail(userEmail1)
+                .SetGroupUserPhone(userPhone1)
+                .SelectExamForGroupUser(product.Select(el => el.Key).First().Split('/')[0])
+                .SelectGroupUserExamLanguage("Polski")
+                .SelectGroupUserExamForm("papierowa")
+                .AddGroupUserToList();
+
+            registerPage.FreePlaceForGroupExam(product.Select(el => el.Key).Last().Split('/')[0]).Should().Be("1");
+
+            registerPage.SetGroupUserName(userName2)
+                .SetgroupUserSurname(userSurname2)
+                .SetgroupUserEmail(userEmail2)
+                .SelectExamForGroupUser(product.Select(el => el.Key).Last().Split('/')[0])
+                .SelectGroupUserExamLanguage("Angielski")
+                .SelectGroupUserExamForm("elektroniczna")
+                .AddGroupUserToList()
+                .GoForward()
+                .SetName(contactUserName)
+                .SetSurname(contactUserSurname)
+                .SetEmail(contactUserEmail)
+                .GoForward()
+                .SetCertificateName(contactUserName)
+                .SetCertificateSurname(contactUserSurname)
+                .SetCertificatePostCode(contactUserPostCode)
+                .SetCertificateCity(contactUserCity)
+                .SetCertificateAddres(contactUserAddress)
+                .SetCertificateComment(contactUserComment)
+                .SelectNoInvoice()
+                .SelectAcceptPrivacyPolicy()
+                .GoForward();
+
+            Verify.That(this.DriverContext, true, true,
+                () => registerPage.SuccessExamNameFull.First().Should().StartWith("Foundation Level"));
+
+            registerPage.SuccessExamNameList.First().Should().Be(product.Select(el => el.Key).First().Split('/')[0].Trim());
+            registerPage.SuccessExamNameList.Last().Should().Be(product.Select(el => el.Key).Last().Split('/')[0].Trim());
+            registerPage.SuccessCntactEmail.Should().Be(contactUserEmail);
+            registerPage.SuccessThankyouMessage.Should().Be("Dziękujemy za zapisanie się na egzaminy");
         }
 
         private int GetTimeStamp()

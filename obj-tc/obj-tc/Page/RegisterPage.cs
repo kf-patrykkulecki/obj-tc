@@ -4,6 +4,8 @@ using Objectivity.Test.Automation.Common;
 using Objectivity.Test.Automation.Common.Extensions;
 using Objectivity.Test.Automation.Common.Types;
 using Objectivity.Test.Automation.Tests.PageObjects;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace obj_tc.Page
 {
@@ -48,6 +50,7 @@ namespace obj_tc.Page
         private ElementLocator letterAddress = new ElementLocator(Locator.Id, "AddressDto_LetterAddress");
         // Complete
         private readonly ElementLocator examName = new ElementLocator(Locator.CssSelector, ".RegisterComplete-products .u-isRegular");
+        private readonly ElementLocator examNameFull = new ElementLocator(Locator.CssSelector, ".u-isLight");
         private readonly ElementLocator contactEmail = new ElementLocator(Locator.Id, "contact-email");
         private readonly ElementLocator thankyouMessage = new ElementLocator(Locator.CssSelector, ".space3");
         // Group
@@ -67,6 +70,10 @@ namespace obj_tc.Page
         public TopbarPage Topbar => new TopbarPage(DriverContext);
 
         public string SuccessExamName => this.Driver.GetElement(examName).Text;
+
+        public List<string> SuccessExamNameList => this.Driver.GetElements(examName).Select(el => el.Text).ToList();
+
+        public List<string> SuccessExamNameFull => this.Driver.GetElements(examNameFull).Select(el => el.Text).ToList();
 
         public string SuccessCntactEmail => this.Driver.GetElement(contactEmail).Text;
 
