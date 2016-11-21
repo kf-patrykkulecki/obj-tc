@@ -545,6 +545,220 @@ namespace obj_tc.Tests
             sessionDetailsPage.Status.Should().Be("Nowy");
         }
 
+        [Fact]
+        public void EditExamSessionInOrderToAddProduct_Test()
+        {
+            var landingPage = new LandingPage(DriverContext);
+
+            // Data
+            var sessionDate = date.AddDays(2).ToString(format);
+            var sessionCity = StringExtensions.GenerateMaxAlphanumericString(50);
+            var sessionPostCode = "54-429";
+            var sessionAddress = StringExtensions.GenerateMaxAlphanumericString(50);
+            var sessionAdditionalInformation = StringExtensions.GenerateMaxAlphanumericString(500);
+            var examiner = "Objectivity 1 Test";
+            var level = new List<string> { "Ekspercki" };
+            var product = new Dictionary<string, int>
+            {
+                {"ISTQB Improving the Testing Process / Angielski", 999}
+            };
+            var expectedProduct = new List<string>
+            {
+                "ISTQB Improving the Testing Process/Angielski"
+            };
+
+            var dashboardPage = landingPage.OpenLandingPage()
+                .OpenLogInPage()
+                .SetEmail(email)
+                .SetPassword(password)
+                .LogIn();
+
+            var addSessionPage = dashboardPage.Topbar.OpenAddSession();
+
+            // Create session
+            addSessionPage.SetDate(sessionDate)
+                .SetPostCode(sessionPostCode)
+                .SetCity(sessionCity)
+                .SetAddress(sessionAddress)
+                .SetAdditionalInformation(sessionAdditionalInformation)
+                .SelectSpacePerProduct()
+                .SelectLevel(level)
+                .SelectProduct(product.Select(el => el.Key).ToList())
+                .SetProductSpace(product.Keys.First(), product.Values.First())
+                .SelectExaminer(examiner);
+
+            var sessionDetailsPage = addSessionPage.SaveSession();
+
+            sessionDetailsPage.EditSession();
+
+            var updateLevel = new List<string> { "Podstawowy" };
+            var updateProduct = new Dictionary<string, int>
+            {
+                {"ISTQB Foundation Level / Polski, Angielski", 999}
+            };
+            var updateExpectedProduct = new List<string>
+            {
+                "ISTQB Foundation Level/Polski, Angielski"
+            };
+
+            addSessionPage.SelectLevel(updateLevel)
+                .SelectProduct(updateProduct.Select(el => el.Key).ToList())
+                .SetProductSpace(updateProduct.Keys.First(), updateProduct.Values.First())
+                .SaveSession();
+
+            // Check session details
+            sessionDetailsPage.Date.Should().Be(sessionDate.Split(' ')[0]);
+            sessionDetailsPage.Time.Should().Be(sessionDate.Split(' ')[1]);
+            sessionDetailsPage.Space.Should().Be(product.Select(el => el.Value).Sum() + updateProduct.Select(el => el.Value).Sum());
+            sessionDetailsPage.Examiner.Should().Be(examiner);
+            sessionDetailsPage.PostCode.Should().Be(sessionPostCode);
+            sessionDetailsPage.City.Should().Be(sessionCity);
+            sessionDetailsPage.Address.Should().Be(sessionAddress);
+            sessionDetailsPage.AdditionalInformation.Should().Be(sessionAdditionalInformation);
+            sessionDetailsPage.Status.Should().Be("Nowy");
+
+            sessionDetailsPage.SwitchToExams();
+            sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(updateExpectedProduct.Concat(expectedProduct));
+            sessionDetailsPage.ExamsSpaceBasic.Should().Be(updateProduct.Select(el => el.Value).Sum());
+            sessionDetailsPage.ExamsSpaceExpert.Should().Be(product.Select(el => el.Value).Sum());
+        }
+
+        [Fact]
+        public void EditExamSessionInOrderToChangeProduct_Test()
+        {
+            var landingPage = new LandingPage(DriverContext);
+
+            // Data
+            var sessionDate = date.AddDays(2).ToString(format);
+            var sessionCity = StringExtensions.GenerateMaxAlphanumericString(50);
+            var sessionPostCode = "54-429";
+            var sessionAddress = StringExtensions.GenerateMaxAlphanumericString(50);
+            var sessionAdditionalInformation = StringExtensions.GenerateMaxAlphanumericString(500);
+            var examiner = "Objectivity 1 Test";
+            var level = new List<string> { "Ekspercki" };
+            var product = new Dictionary<string, int>
+            {
+                {"ISTQB Improving the Testing Process / Angielski", 999}
+            };
+            var expectedProduct = new List<string>
+            {
+                "ISTQB Improving the Testing Process/Angielski"
+            };
+
+            var dashboardPage = landingPage.OpenLandingPage()
+                .OpenLogInPage()
+                .SetEmail(email)
+                .SetPassword(password)
+                .LogIn();
+
+            var addSessionPage = dashboardPage.Topbar.OpenAddSession();
+
+            // Create session
+            addSessionPage.SetDate(sessionDate)
+                .SetPostCode(sessionPostCode)
+                .SetCity(sessionCity)
+                .SetAddress(sessionAddress)
+                .SetAdditionalInformation(sessionAdditionalInformation)
+                .SelectSpacePerProduct()
+                .SelectLevel(level)
+                .SelectProduct(product.Select(el => el.Key).ToList())
+                .SetProductSpace(product.Keys.First(), product.Values.First())
+                .SelectExaminer(examiner);
+
+            var sessionDetailsPage = addSessionPage.SaveSession();
+
+            sessionDetailsPage.EditSession();
+
+            var updateLevel = new List<string> { "Podstawowy" };
+            var updateProduct = new Dictionary<string, int>
+            {
+                {"ISTQB Foundation Level / Polski, Angielski", 999}
+            };
+            var updateExpectedProduct = new List<string>
+            {
+                "ISTQB Foundation Level/Polski, Angielski"
+            };
+
+            addSessionPage.UnSelectProduct(product.Select(el => el.Key).ToList())
+                .UnSelectLevel(level)
+                .SelectLevel(updateLevel)
+                .SelectProduct(updateProduct.Select(el => el.Key).ToList())
+                .SetProductSpace(updateProduct.Keys.First(), updateProduct.Values.First())
+                .SaveSession();
+
+            // Check session details
+            sessionDetailsPage.Date.Should().Be(sessionDate.Split(' ')[0]);
+            sessionDetailsPage.Time.Should().Be(sessionDate.Split(' ')[1]);
+            sessionDetailsPage.Space.Should().Be(updateProduct.Select(el => el.Value).Sum());
+            sessionDetailsPage.Examiner.Should().Be(examiner);
+            sessionDetailsPage.PostCode.Should().Be(sessionPostCode);
+            sessionDetailsPage.City.Should().Be(sessionCity);
+            sessionDetailsPage.Address.Should().Be(sessionAddress);
+            sessionDetailsPage.AdditionalInformation.Should().Be(sessionAdditionalInformation);
+            sessionDetailsPage.Status.Should().Be("Nowy");
+
+            sessionDetailsPage.SwitchToExams();
+            sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(updateExpectedProduct);
+            sessionDetailsPage.ExamsSpaceBasic.Should().Be(updateProduct.Select(el => el.Value).Sum());
+        }
+
+        [Fact]
+        public void EditExamSessionInOrderToDeleteProduct_Test()
+        {
+            var landingPage = new LandingPage(DriverContext);
+
+            // Data
+            var sessionDate = date.AddDays(1).ToString(format);
+            var sessionCity = GetTimeStamp();
+            var level = new List<string>
+            {
+                "Podstawowy",
+                "Ekspercki"
+            };
+            var product = new Dictionary<string, int>
+            {
+                {"ISTQB Foundation Level / Polski, Angielski", 999},
+                {"ISTQB Improving the Testing Process / Angielski", 999 }
+            };
+            var expectedProduct = new List<string>
+            {
+                "ISTQB Foundation Level/Polski, Angielski",
+                "ISTQB Improving the Testing Process/Angielski"
+            };
+
+            var addSessionPage =
+                landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn().Topbar.OpenAddSession();
+
+            // Create session
+            addSessionPage.SetDate(sessionDate)
+                .SetCity(sessionCity.ToString())
+                .SetSpacePerSession(999.ToString())
+                .SelectLevel(level)
+                .SelectProduct(product.Select(el => el.Key).ToList());
+
+            var sessionDetailsPage = addSessionPage.SaveSession();
+            // Check if session present on dashboard
+            sessionDetailsPage.EditSession();
+
+            addSessionPage.RemoveProduct(product.First().Key).SaveSession();
+
+            // Check session details
+            sessionDetailsPage.Date.Should().Be(sessionDate.Split(' ')[0]);
+            sessionDetailsPage.Time.Should().Be(sessionDate.Split(' ')[1]);
+            sessionDetailsPage.Space.Should().Be(product.Last().Value);
+            sessionDetailsPage.Examiner.Should().BeEmpty();
+            sessionDetailsPage.PostCode.Should().Be("-");
+            sessionDetailsPage.City.Should().Be(sessionCity.ToString());
+            sessionDetailsPage.Address.Should().Be("-");
+            sessionDetailsPage.AdditionalInformation.Should().Be("-");
+            sessionDetailsPage.Status.Should().Be("Nowy");
+
+            sessionDetailsPage.SwitchToExams();
+            sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
+            sessionDetailsPage.ExamsSpaceBasic.Should().Be(999);
+            sessionDetailsPage.ExamsSpaceExpert.Should().Be(999);
+        }
+
         private int GetTimeStamp()
         {
             return (int)(date.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
