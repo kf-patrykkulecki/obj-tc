@@ -470,6 +470,49 @@ namespace obj_tc.Tests
             currentCertDetails[9].Should().Be(invoiceNip.Replace("-", string.Empty));
         }
 
+        [Fact]
+        public void RegisterGroupOfUsersToExam_Test()
+        {
+            var landingPage = new LandingPage(DriverContext);
+
+            // Data
+            var sessionDate = date.AddDays(8).ToString(format);
+            var sessionCity = GetTimeStamp();
+            var level = new List<string> { "Podstawowy" };
+            var product = new Dictionary<string, int>
+            {
+                {"ISTQB Foundation Level / Polski, Angielski", 2}
+            };
+
+            var dashboardPage =
+                landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn();
+
+            var addSessionPage = dashboardPage.Topbar.OpenAddSession();
+
+            // Create session
+            addSessionPage.SetDate(sessionDate)
+                .SetCity(sessionCity.ToString())
+                .SelectSpacePerProduct()
+                .SelectLevel(level)
+                .SelectProduct(product.Select(el => el.Key).ToList())
+                .SetProductSpace(product.Keys.First(), product.Values.First());
+
+            // Activate session
+            var sessionDetailsPage = addSessionPage.SaveSession().ActivateSession();
+            sessionDetailsPage.Status.Should().Be("Otwarta");
+
+            // Register to session
+            var registerPage = sessionDetailsPage.Topbar.LogOut().RegisterGroupToSession(sessionCity.ToString());
+
+            //TODO FINISH
+        }
+
+        [Fact]
+        public void RegisterGroupOfUsersToDifferentExams_Test()
+        {
+            //TODO
+        }
+
         private int GetTimeStamp()
         {
             return (int)(date.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;

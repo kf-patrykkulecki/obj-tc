@@ -10,6 +10,7 @@ namespace obj_tc.Page
     {
         private readonly ElementLocator logInLink = new ElementLocator(Locator.Id, "loginLink");
         private readonly ElementLocator registerIndividual = new ElementLocator(Locator.XPath, "//h5[contains(., '{0}')]/ancestor::div[contains(@class, 'Agenda-dateRow')]/following-sibling::div[contains(@class, 'Agenda-dateContentContainer')]//td[contains(@class, 'btn')]");
+        private readonly ElementLocator registerGroup = new ElementLocator(Locator.XPath, "//h5[contains(., '{0}')]/ancestor::div[contains(@class, 'Agenda-dateRow')]/following-sibling::div[contains(@class, 'Agenda-dateContentContainer')]//div[contains(@class, 'Agenda-groupBtnContainer')]");
 
         public LandingPage(DriverContext driverContext) : base(driverContext)
         {
@@ -32,6 +33,12 @@ namespace obj_tc.Page
         {
             this.Driver.Click(registerIndividual.Format(text));
             return new RegisterPage(this.DriverContext);
+        }
+
+        public RegisterPage RegisterGroupToSession(string text)
+        {
+            this.Driver.Click(registerGroup.Format(text));
+            return new RegisterPage(DriverContext);
         }
 
         public string GetRegisterButtonText(string text)

@@ -50,7 +50,13 @@ namespace obj_tc.Page
         private readonly ElementLocator examName = new ElementLocator(Locator.CssSelector, ".RegisterComplete-products .u-isRegular");
         private readonly ElementLocator contactEmail = new ElementLocator(Locator.Id, "contact-email");
         private readonly ElementLocator thankyouMessage = new ElementLocator(Locator.CssSelector, ".space3");
-
+        // Group
+        private ElementLocator groupUserName = new ElementLocator(Locator.CssSelector, "[name = 'name']");
+        private ElementLocator groupUserSurname = new ElementLocator(Locator.CssSelector, "[name = 'surname']");
+        private ElementLocator groupUserEmail = new ElementLocator(Locator.CssSelector, "[name = 'email']");
+        private ElementLocator groupUserPhone = new ElementLocator(Locator.CssSelector, "[name = 'phone']");
+        private ElementLocator groupUserExam = new ElementLocator(Locator.XPath, "//span[contains(text(), '{0}')]");
+        
         public RegisterPage(DriverContext driverContext) : base(driverContext)
         {
         }
