@@ -13,6 +13,7 @@ namespace obj_tc.Page
         private readonly ElementLocator dashboardLink = new ElementLocator(Locator.Id, "navItem-Dashboard");
         private readonly ElementLocator registrationLink = new ElementLocator(Locator.Id, "navItem-Registration");
         private readonly ElementLocator productsLink = new ElementLocator(Locator.Id, "navItem-Products");
+        private readonly ElementLocator pgsLogo = new ElementLocator(Locator.CssSelector, "img.Header-logo.u-verticalMiddleAligned.u-hideOnMobile");
 
         public TopbarPage(DriverContext driverContext) : base(driverContext)
         {
@@ -48,6 +49,12 @@ namespace obj_tc.Page
         public ProductListPage OpenProducts()
         {
             this.Driver.Click(productsLink);
+            return new ProductListPage(DriverContext);
+        }
+
+        public ProductListPage ClickLogo()
+        {
+            this.Driver.Click(pgsLogo);
             return new ProductListPage(DriverContext);
         }
     }

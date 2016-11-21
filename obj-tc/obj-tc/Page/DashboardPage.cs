@@ -24,10 +24,42 @@ namespace obj_tc.Page
             return this.Driver.IsElementPresentInDom(this.session.Format(text));
         }
 
+
+
         public LandingPage Register()
         {
             this.Driver.Click(registerButton);
             return new LandingPage(this.DriverContext);
         }
+
+        public string[] GetExamHours(string date, string city)
+        {
+            var dashboardHours = new ElementLocator(Locator.XPath,string.Format( "//h5[contains(.,'{0}, {1}')]//..//..//span",date,city));
+            var hours = this.Driver.GetElements(dashboardHours);
+            string[] hoursList = new string[hours.Count];
+            int i = 0;
+            foreach (var a in hours) {
+             
+                hoursList[i] = a.Text;
+                i++;
+            }
+            return hoursList;
+            }
+
+        public string[] GetExamList(string date, string city, string hour) {
+            //h5[contains(.,'22 listopada 2016, 1479717515')]/../../div[contains(.,'12:00')]//td
+            var dashboardHours = new ElementLocator(Locator.XPath, string.Format("//h5[contains(.,'22 listopada 2016, {0}')]/../../div[contains(.,'{1}')]//td",city,hour));
+            var hours = this.Driver.GetElements(dashboardHours);
+            string[] levelsList = new string[hours.Count];
+            int i = 0;
+            foreach (var a in hours)
+            {
+
+                levelsList[i] = a.Text;
+                i++;
+            }
+            return levelsList;
+        
+    }
     }
 }
