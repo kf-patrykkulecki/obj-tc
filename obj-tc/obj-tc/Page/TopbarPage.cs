@@ -14,6 +14,7 @@ namespace obj_tc.Page
         private readonly ElementLocator registrationLink = new ElementLocator(Locator.Id, "navItem-Registration");
         private readonly ElementLocator productsLink = new ElementLocator(Locator.Id, "navItem-Products");
         private readonly ElementLocator pgsLogo = new ElementLocator(Locator.CssSelector, "img.Header-logo.u-verticalMiddleAligned.u-hideOnMobile");
+        private readonly ElementLocator logOut = new ElementLocator(Locator.CssSelector, ".Navbar-userMenu [href *= 'LogOff']");
 
         public TopbarPage(DriverContext driverContext) : base(driverContext)
         {
@@ -40,21 +41,15 @@ namespace obj_tc.Page
             return new DashboardPage(this.DriverContext);
         }
 
-        public RegisterPage OpenRegistration()
+        public RegisterListPage OpenRegistration()
         {
             this.Driver.Click(registrationLink);
-            return new RegisterPage(this.DriverContext);
+            return new RegisterListPage(this.DriverContext);
         }
 
         public ProductListPage OpenProducts()
         {
             this.Driver.Click(productsLink);
-            return new ProductListPage(DriverContext);
-        }
-
-        public ProductListPage ClickLogo()
-        {
-            this.Driver.Click(pgsLogo);
             return new ProductListPage(DriverContext);
         }
     }
