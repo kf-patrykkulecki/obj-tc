@@ -154,6 +154,7 @@ namespace obj_tc.Tests
                 "ISTQB Improving the Testing Process/Angielski",
                 "ISTQB Agile Tester Extension/Polski, Angielski"
             };
+            var productSpace = 3;
 
             var dashboardPage =
                 landingPage.OpenLandingPage().OpenLogInPage().SetEmail(email).SetPassword(password).LogIn();
@@ -165,24 +166,25 @@ namespace obj_tc.Tests
                 .SetCity(sessionCity.ToString())
                 .SelectSpacePerProduct()
                 .SelectLevel(level)
-                .SelectProduct(product);
+                .SelectProduct(product)
+                .SetProductSpace(product.First(), productSpace);
 
             var sessionDetailsPage = addSessionPage.SaveSession();
 
             // Check session details
             sessionDetailsPage.Date.Should().Be(sessionDate.Split(' ')[0]);
             sessionDetailsPage.Time.Should().Be(sessionDate.Split(' ')[1]);
-            sessionDetailsPage.Space.Should().Be(0);
+            sessionDetailsPage.Space.Should().Be(productSpace);
             sessionDetailsPage.Examiner.Should().BeEmpty();
             sessionDetailsPage.PostCode.Should().Be("-");
             sessionDetailsPage.City.Should().Be(sessionCity.ToString());
             sessionDetailsPage.Address.Should().Be("-");
             sessionDetailsPage.AdditionalInformation.Should().Be("-");
-            sessionDetailsPage.Status.Should().Be("Zamknięta - niezalogowani");
+            sessionDetailsPage.Status.Should().Be("Nowy");
 
             sessionDetailsPage.SwitchToExams();
             sessionDetailsPage.ExamList.ShouldAllBeEquivalentTo(expectedProduct);
-            sessionDetailsPage.ExamsSpaceBasic.Should().Be(0);
+            sessionDetailsPage.ExamsSpaceBasic.Should().Be(productSpace);
             sessionDetailsPage.ExamsSpaceAdvanced.Should().Be(0);
             sessionDetailsPage.ExamsSpaceExpert.Should().Be(0);
             sessionDetailsPage.ExamsSpaceOther.Should().Be(0);
